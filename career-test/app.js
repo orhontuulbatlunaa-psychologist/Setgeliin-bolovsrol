@@ -26,6 +26,8 @@ const answers = { interest: {}, ability: {}, profile: {} };
 let student = null;
 let currentSection = "interest";
 let latestPayload = null;
+let requestId = null;
+let isSubmitting = false;
 
 $("#year").textContent = new Date().getFullYear();
 
@@ -120,6 +122,7 @@ form.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!form.reportValidity()) return;
   const fd = new FormData(form);
+  requestId = window.crypto.randomUUID();
   student = {
     fullName: String(fd.get("fullName")).trim(),
     grade: String(fd.get("grade")),
@@ -236,67 +239,72 @@ function buildResults() {
     responseCount: totalAnswered()
   };
 }
-function showResults() {
+async function showResults() {
   if (!isComplete()) {
     alert("Нийт 114 хариулт бүрэн бөглөгдөөгүй байна. Дутуу хэсгүүдийг шалгана уу.");
     return;
   }
-  latestPayload = {
-    student,
-    assessmentVersion: ASSESSMENT.schemaVersion,
-    submittedAt: new Date().toISOString(),
-    answers: structuredClone(answers),
-    results: buildResults()
-  };
-  testArea.hidden = true;
-  resultsArea.hidden = false;
-  const warning = $("#results-warning");
-  warning.innerHTML = `<strong>Онооны шатлалын засвар бүртгэгдсэн.</strong> ${esc(ASSESSMENT.sourceReview.note)}<br><br>Энэ нь хөгжүүлэлтийн туршилтын хувилбар: хариулт серверт хадгалагдаагүй, админы зөвшөөрөл болон PDF/и-мэйл илгээлт холбогдоогүй. Энэ дэлгэцийн дүнг эцсийн мэргэжлийн тайлан гэж ашиглахгүй.`;
-  const { results } = latestPayload;
-  const shared = results.comparison.filter((x) => x.appearances === 3).map((x) => x.code);
-  const summary = `<div class="student-summary">
-    <span><b>${esc(student.fullName)}</b></span>
-    <span>${esc(student.grade)}-р анги, ${esc(student.group)} бүлэг</span>
-    <span>${esc(student.email)}</span>
-  </div>`;
-  const comparisonRows = results.comparison.map((item) => `<div class="score-row">
-    <span class="score-name">${item.code} · ${item.short}</span>
-    <div class="bar-track"><div class="bar-fill" style="width:${item.appearances / 3 * 100}%;background:${item.color}"></div></div>
-    <span class="score-value">${item.appearances}/3</span>
-  </div>`).join("");
-  $("#results-content").innerHTML = summary +
-    renderScores("Тест №1 · Мэргэжилд чиглэсэн хүсэл сонирхол", results.interest) +
-    renderScores("Тест №2 · Өөрийн үнэлсэн чадавх", results.ability) +
-    renderScores("Тест №3 · Мэргэжлийн хэв шинж", results.profile) +
-    renderRadar("Гурван үнэлгээний харьцуулалт", [
-      { label: "Сонирхол", scores: results.interest, color: "#327c79" },
-      { label: "Чадавх", scores: results.ability, color: "#D18A56" },
-      { label: "Хэв шинж", scores: results.profile, color: "#738CC7" }
-    ]) +
-    `<section class="result-section"><h2>Гурван үнэлгээний харьцуулалт</h2>
-      <p class="section-description">Энэ зураглал нь хэв шинж бүр гурван үнэлгээний эхний гуравт хэдэн удаа орсныг харуулна. Эх аргачлалд гурван үнэлгээг нэг тоон оноонд нэгтгэх жин, томьёо заагаагүй тул нийлмэл оноо зохиож тооцоогүй.</p>
-      ${comparisonRows}
-      <p class="section-description">${shared.length ? "Гурван үнэлгээнд нийтлэг эхний гуравт орсон хэв шинж: " + shared.join(", ") : "Гурван үнэлгээнд ижил эхний хэв шинж давхцаагүй байна."} Энэ ажиглалтыг эцсийн зөвлөмж болгохын өмнө мэргэжилтэн тайлбарлана.</p>
-    </section>`;
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (isSubmitting) return;
+  isSubmitting = true;
+  const finishButton = $("#finish-test");
+  const originalLabel = finishButton.textContent;
+  finishButton.disabled = true;
+  finishButton.textContent = "Хариулт илгээж байна…";
+  $("#results-warning").textContent = "";
+  try {
+    const response = await fetch("/api/assessment/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        requestId,
+        student,
+        answers: structuredClone(answers)
+      })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const detail = Array.isArray(data.details) && data.details.length
+        ? " " + data.details.slice(0, 3).join(" ")
+        : "";
+      throw new Error((data.error || "Тестийг илгээж чадсангүй.") + detail);
+    }
+    latestPayload = {
+      submissionCode: data.submissionCode,
+      status: data.status,
+      receivedAt: new Date().toISOString()
+    };
+    testArea.hidden = true;
+    resultsArea.hidden = false;
+    $("#results-title").textContent = "Таны хариултыг хүлээн авлаа";
+    const warning = $("#results-warning");
+    warning.className = "submission-receipt";
+    warning.textContent = "Тестийн хариулт амжилттай бүртгэгдлээ. Бүртгэлийн дугаар: " + data.submissionCode +
+      ". Манай баг оноо, тайланг хянаж зөвшөөрсний дараа таны бүртгүүлсэн " + student.email +
+      " хаяг руу дэлгэрэнгүй PDF тайлан илгээнэ.";
+    $("#results-content").innerHTML =
+      '<div class="student-summary">' +
+      '<span><b>' + esc(student.fullName) + '</b></span>' +
+      '<span>' + esc(student.grade) + '-р анги, ' + esc(student.group) + ' бүлэг</span>' +
+      '<span>' + esc(student.email) + '</span>' +
+      '</div><p class="section-description">Энэ хуудсанд онооны тайланг харуулахгүй. Тайланг зөвхөн админы хяналт, зөвшөөрлийн дараа и-мэйлээр илгээнэ.</p>';
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } catch (error) {
+    alert(error.message);
+    finishButton.disabled = false;
+    finishButton.textContent = originalLabel;
+  } finally {
+    isSubmitting = false;
+  }
 }
 $("#finish-test").addEventListener("click", showResults);
 
-$("#export-json").addEventListener("click", () => {
-  if (!latestPayload) return;
-  const blob = new Blob([JSON.stringify(latestPayload, null, 2)], { type: "application/json;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = "riasec-test-response.json";
-  anchor.click();
-  URL.revokeObjectURL(url);
-});
 $("#restart").addEventListener("click", () => {
   if (!confirm("Одоогийн бөглөсөн хариултыг энэ дэлгэцээс арилгаж, шинээр эхлүүлэх үү?")) return;
   for (const section of sections) answers[section] = {};
   student = null;
   latestPayload = null;
+  requestId = null;
   form.reset();
   resultsArea.hidden = true;
   registration.hidden = false;
