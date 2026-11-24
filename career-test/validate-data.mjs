@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { ASSESSMENT, QUESTION_COUNTS, RI } from "./data.js";
-import { calculateAssessmentResults, rankTopThree, summarizeGeneralProfile, validateResponseSet } from "./scoring.js";
+import { calculateAssessmentResults, compareAssessmentProfiles, rankTopThree, summarizeGeneralProfile, validateResponseSet } from "./scoring.js";
 
 assert.equal(QUESTION_COUNTS.interest, 36, "Тест №1 яг 36 асуулттай байх ёстой");
 assert.equal(QUESTION_COUNTS.ability, 36, "Тест №2 яг 36 асуулттай байх ёстой");
@@ -85,6 +85,32 @@ assert.deepEqual(
   verifiedManualExample.comparison.map((item) => [item.code, item.appearances]),
   [["S",3],["I",3],["E",2],["C",1],["R",0],["A",0]],
   "Гараар тулгасан жишээний нэгдсэн давтамж зөв байх ёстой"
+);
+
+assert.deepEqual(
+  compareAssessmentProfiles({
+    interest: ["S", "E", "I"],
+    ability: ["C", "S", "I"],
+    profile: ["S", "E", "I"]
+  }).commonAcrossAll,
+  ["S", "I"],
+  "Гурван үнэлгээний огтлолцлыг зөв илрүүлнэ"
+);
+assert.equal(
+  compareAssessmentProfiles({
+    interest: ["R", "I", "A"],
+    ability: ["R", "I", "S"],
+    profile: ["E", "C", "S"]
+  }).pattern,
+  "interest-ability-aligned-profile-differs"
+);
+assert.equal(
+  compareAssessmentProfiles({
+    interest: ["R", "I", "A"],
+    ability: ["S", "E", "C"],
+    profile: ["I", "E", "C"]
+  }).pattern,
+  "three-way-divergence"
 );
 assert.ok(zeroResult.generalProfile.dominant.length >= 1);
 assert.ok(zeroResult.generalProfile.ranked.length >= 1);
