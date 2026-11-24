@@ -132,22 +132,37 @@ function createCard(row) {
     note.value = row.review_note || "";
     const reject = createNode("button", "button light", "Буцаах");
     reject.addEventListener("click", () => review(row.id, "reject", note.value));
-    const approve = createNode("button", "button primary", "Зөвшөөрөх");
-    approve.disabled = true;
-    approve.title = "PDF тайлан болон имэйл илгээлтийн холболт дуусаагүй.";
-    const hint = createNode("p", "", "Зөвшөөрөх товч PDF тайлан болон имэйл илгээлт бүрэн холбогдсоны дараа идэвхжинэ.");
+    const approve = createNode("button", "button primary", "Тайлан илгээхийг зөвшөөрөх");
+    approve.addEventListener("click", () => review(row.id, "approve", note.value));
+    const hint = createNode("p", "", "Зөвшөөрөхөд PDF тайлан үүсэж, private хадгалалтад орсны дараа сурагчийн бүртгэлтэй и-мэйл рүү хавсралтаар илгээгдэнэ.");
     actions.append(note, reject, approve, hint);
+  } else if (row.review_status === "approved" && ["failed","waiting_report"].includes(row.email_status)) {
+    const note = document.createElement("textarea");
+    note.className = "note";
+    note.placeholder = "Дахин илгээх тэмдэглэл (сонголтоор)";
+    note.value = row.review_note || "";
+    const resend = createNode("button", "button primary", "PDF тайланг дахин илгээх");
+    resend.addEventListener("click", () => review(row.id, "resend", note.value));
+    actions.append(note, resend, createNode("p", "", "Өмнөх илгээлт амжилтгүй эсвэл хүлээгдэж байгаа тул ижил тайланг дахин үүсгэж илгээнэ."));
+  } else if (row.review_status === "approved" && row.email_status === "sent") {
+    actions.append(createNode("p", "delivery-success", "PDF тайлан и-мэйлээр амжилттай илгээгдсэн."));
   }
   card.append(actions);
   return card;
 }
 async function review(id, action, reviewNote) {
-  if (!confirm("Энэ хүсэлтийг буцаах уу?")) return;
+  const prompts = {
+    approve: "Энэ сурагчийн оноог шалгасан уу? Зөвшөөрвөл PDF тайлан үүсэж, бүртгэлтэй и-мэйл рүү илгээгдэнэ.",
+    reject: "Энэ хүсэлтийг буцаах уу? Тайлан илгээгдэхгүй.",
+    resend: "PDF тайланг ижил бүртгэлтэй и-мэйл рүү дахин илгээх үү?"
+  };
+  if (!confirm(prompts[action] || "Үргэлжлүүлэх үү?")) return;
   try {
     await api("/api/admin/review", { method: "POST", body: JSON.stringify({ id, action, reviewNote }) });
     await loadSubmissions();
   } catch (error) {
     $("#dashboard-error").textContent = error.message;
+    await loadSubmissions();
   }
 }
 async function loadSubmissions() {
