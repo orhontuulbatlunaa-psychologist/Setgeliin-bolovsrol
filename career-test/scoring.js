@@ -73,27 +73,7 @@ function countAppearances(code, tops) {
   return tops.filter((codes) => codes.includes(code)).length;
 }
 
-export function calculateAssessmentResults(assessment, answers) {
-  const validationErrors = validateResponseSet(assessment, answers);
-  if (validationErrors.length) {
-    const error = new Error("Тестийн хариулт бүрэн бус эсвэл буруу байна.");
-    error.validationErrors = validationErrors;
-    throw error;
-  }
-
-  const interest = scoreRatingSection(assessment, answers, "interest");
-  const ability = scoreRatingSection(assessment, answers, "ability");
-  const profile = scoreProfileSection(assessment, answers);
-
-  const tops = {
-    interest: rankTopThree(interest).map((item) => item.code),
-    ability: rankTopThree(ability).map((item) => item.code),
-    profile: rankTopThree(profile).map((item) => item.code)
-  };
-
-  // Гурван тестийн тус бүрийн эхний гурван (тэнцсэн бол бүгдийг) хэв шинж
-  // нийт хэдэн тестэд давтагдсаныг тоолж нэгдсэн дүгнэлт гаргана.
-  // Өөр өөр төрлийн оноонуудыг хооронд нь нэмэхгүй, нийлмэл оноо зохиохгүй.
+export function summarizeGeneralProfile(tops) {
   const comparison = RI.map((type) => ({
     ...type,
     appearances: countAppearances(type.code, [tops.interest, tops.ability, tops.profile]),
@@ -116,6 +96,30 @@ export function calculateAssessmentResults(assessment, answers) {
     ranked: [...dominantItems, ...secondaryItems].map((item) => item.code),
     rule: "3 тест тус бүрийн эхний 3 хэв шинжийн давтамж (0–3)-г тоолно. Хамгийн их давтамжтай хэв шинж(үүд) зонхилох; тэдний дараа давтамжаар эхний хоёр хэв шинж дагалдах болно. Давтамж тэнцсэн хэв шинжүүдийг хасахгүй."
   };
+
+  return { comparison, generalProfile };
+}
+
+export function calculateAssessmentResults(assessment, answers) {
+  const validationErrors = validateResponseSet(assessment, answers);
+  if (validationErrors.length) {
+    const error = new Error("Тестийн хариулт бүрэн бус эсвэл буруу байна.");
+    error.validationErrors = validationErrors;
+    throw error;
+  }
+
+  const interest = scoreRatingSection(assessment, answers, "interest");
+  const ability = scoreRatingSection(assessment, answers, "ability");
+  const profile = scoreProfileSection(assessment, answers);
+
+  const tops = {
+    interest: rankTopThree(interest).map((item) => item.code),
+    ability: rankTopThree(ability).map((item) => item.code),
+    profile: rankTopThree(profile).map((item) => item.code)
+  };
+
+  // Өөр өөр төрлийн raw оноог хооронд нь нэмэхгүй; зөвхөн тест тус бүрийн top-3 давтамжийг харьцуулна.
+  const { comparison, generalProfile } = summarizeGeneralProfile(tops);
 
   return { interest, ability, profile, tops, comparison, generalProfile };
 }
