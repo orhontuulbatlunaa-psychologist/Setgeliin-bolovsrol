@@ -6,6 +6,10 @@ on:
       - feature/holland-riasec-platform
     paths:
       - "career-test/**"
+      - "api/**"
+      - "supabase/**"
+      - "api/**"
+      - "supabase/**"
       - ".github/workflows/riasec-validation.yml"
   pull_request:
     paths:
@@ -26,6 +30,8 @@ jobs:
           node --check ./scoring.js
           node --check ./app.js
           node --check ./validate-data.mjs
+      - name: Check server JavaScript syntax
+        run: find api -name "*.js" -type f -exec node --check {} \\\;
       - name: Validate source counts and scoring rules
         working-directory: career-test
         run: node ./validate-data.mjs
