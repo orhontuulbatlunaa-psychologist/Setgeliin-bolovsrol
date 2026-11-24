@@ -20,6 +20,7 @@
     .brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:.01em}
     .mark{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--sage);color:var(--sage-dark);font-size:22px}
     .brand small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.08em}
+    .brand-logo{width:54px;height:54px;object-fit:contain;flex:0 0 54px}
     nav{display:flex;gap:22px;align-items:center;font-size:14px;color:#526057}
     nav a:hover{color:var(--clay)}
     .nav-cta,.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--sage-dark);color:white;border-radius:999px;padding:12px 20px;font-weight:650;font-size:14px;border:0;cursor:pointer}
@@ -83,16 +84,17 @@
   <header>
     <div class="wrap nav">
       <a class="brand" href="#home">
-        <span class="mark">♡</span>
+        <img class="brand-logo" src="assets/sb-logo.svg" alt="Сэтгэлийн боловсрол лого">
         <span>Сэтгэлийн боловсрол<small>СЭТГЭЛ ЗҮЙН ЗӨВЛӨГӨӨ · СУРГАЛТ</small></span>
       </a>
       <nav aria-label="Үндсэн цэс">
         <a href="#about">Бидний тухай</a>
         <a href="#services">Үйлчилгээ</a>
+        <a href="career-test/">Мэргэжил сонгох тест</a>
         <a href="#training">Сургалт</a>
         <a href="#contact">Холбоо барих</a>
       </nav>
-      <a class="nav-cta" href="#contact">Холбогдох</a>
+      <a class="nav-cta" href="career-test/">Тест бөглөх</a>
     </div>
   </header>
 
@@ -106,6 +108,7 @@
           <div class="hero-actions">
             <a class="btn" href="#services">Үйлчилгээтэй танилцах</a>
             <a class="btn secondary" href="#training">Сургалтууд үзэх</a>
+            <a class="btn" href="career-test/">Мэргэжил сонголтын тест</a>
           </div>
         </div>
         <div class="hero-art" aria-hidden="true">
