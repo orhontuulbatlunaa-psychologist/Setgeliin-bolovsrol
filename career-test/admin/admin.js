@@ -136,7 +136,7 @@ function createCard(row) {
     approve.addEventListener("click", () => review(row.id, "approve", note.value));
     const hint = createNode("p", "", "Зөвшөөрөхөд PDF тайлан үүсэж, private хадгалалтад орсны дараа сурагчийн бүртгэлтэй и-мэйл рүү хавсралтаар илгээгдэнэ.");
     actions.append(note, reject, approve, hint);
-  } else if (row.review_status === "approved" && ["failed","waiting_report"].includes(row.email_status)) {
+  } else if (row.review_status === "approved" && ["failed","waiting_report","sending"].includes(row.email_status)) {
     const note = document.createElement("textarea");
     note.className = "note";
     note.placeholder = "Дахин илгээх тэмдэглэл (сонголтоор)";
