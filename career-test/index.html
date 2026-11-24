@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="9–12 дугаар ангийн сурагчдад зориулсан мэргэжлийн чиг баримжаа тодорхойлох судалгаа.">
+  <meta name="theme-color" content="#76c5c2">
+  <title>Мэргэжлийн чиг баримжааны тест | Сэтгэлийн боловсрол</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="Сэтгэлийн боловсрол — нүүр хуудас">
+      <span class="brand-mark" aria-hidden="true">✿</span>
+      <span><b>Сэтгэлийн боловсрол</b><small>ӨӨРИЙГӨӨ ТАНИН МЭДЭХ АЯЛАЛ</small></span>
+    </a>
+    <span class="header-tag">Мэргэжлийн чиг баримжаа</span>
+  </header>
+
+  <main class="shell">
+    <section id="registration" class="panel intro">
+      <p class="eyebrow">9–12 дугаар ангийн сурагчдад</p>
+      <h1>Өөрийгөө таньж,<br><em>ирээдүйгээ</em> чиглүүлье.</h1>
+      <p class="intro-copy">Энэхүү судалгаа нь таны мэргэжилд чиглэсэн сонирхол, өөрийн үнэлсэн чадавх, мэргэжлийн хэв шинжийг танин мэдэхэд тусална.</p>
+      <div class="guide-grid">
+        <article><span>01</span><b>Сонирхол</b><p>Та ямар үйл ажиллагаанд дуртай вэ?</p></article>
+        <article><span>02</span><b>Чадавх</b><p>Та юуг хийж чадна гэж өөрийгөө үнэлдэг вэ?</p></article>
+        <article><span>03</span><b>Хэв шинж</b><p>Аль төрлийн мэргэжлийн орчин танд ойр вэ?</p></article>
+      </div>
+      <form id="registration-form" class="registration-form">
+        <h2>Бүртгэлийн мэдээлэл</h2>
+        <div class="field-grid">
+          <label>Овог, нэр
+            <input name="fullName" autocomplete="name" maxlength="120" required placeholder="Овог, нэрээ бичнэ үү">
+          </label>
+          <label>Анги
+            <select name="grade" required>
+              <option value="">Анги сонгох</option>
+              <option value="9">9-р анги</option><option value="10">10-р анги</option>
+              <option value="11">11-р анги</option><option value="12">12-р анги</option>
+            </select>
+          </label>
+          <label>Бүлэг
+            <input name="group" maxlength="20" required placeholder="Жишээ: А">
+          </label>
+          <label>И-мэйл хаяг
+            <input name="email" type="email" autocomplete="email" maxlength="254" required placeholder="name@example.com">
+          </label>
+          <label class="full">Утасны дугаар <span class="optional">сонголтоор</span>
+            <input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Утасны дугаар">
+          </label>
+        </div>
+        <label class="consent"><input name="consent" type="checkbox" required><span>Миний бүртгэлийн мэдээлэл болон тестийн хариуг тайлан боловсруулах, админы хяналтын дараа и-мэйлээр илгээх зорилгоор ашиглах нөхцөлийг уншиж ойлгон зөвшөөрч байна.</span></label>
+        <p class="minor-note">Сурагч та бүртгүүлэхээсээ өмнө эцэг эх, асран хамгаалагчдаа тестийн зорилго болон мэдээлэл ашиглах нөхцөлийг танилцуулна уу.</p>
+        <button class="button primary" type="submit">Тест эхлүүлэх <span aria-hidden="true">→</span></button>
+      </form>
+    </section>
+
+    <section id="test-area" class="panel test-area" hidden>
+      <div class="test-heading">
+        <div><p class="eyebrow">Таны судалгааны явц</p><h1 id="test-title">Тест №1. Миний мэргэжилд чиглэсэн хүсэл сонирхол</h1></div>
+        <div class="progress-count"><b id="answered-count">0</b><span>/114 хариулсан</span></div>
+      </div>
+      <div class="progress-track"><div id="progress-fill"></div></div>
+      <nav class="test-steps" aria-label="Тестийн хэсгүүд">
+        <button type="button" class="step active" data-section="interest"><span>1</span>Сонирхол <small>36</small></button>
+        <button type="button" class="step" data-section="ability"><span>2</span>Чадавх <small>36</small></button>
+        <button type="button" class="step" data-section="profile"><span>3</span>Хэв шинж <small>42</small></button>
+      </nav>
+      <div id="section-description" class="section-description"></div>
+      <div id="questions" class="questions"></div>
+      <div class="test-footer">
+        <button type="button" id="previous-section" class="button secondary">Өмнөх хэсэг</button>
+        <button type="button" id="next-section" class="button primary">Дараагийн хэсэг <span aria-hidden="true">→</span></button>
+        <button type="button" id="finish-test" class="button primary" hidden>Хариултаа илгээх</button>
+      </div>
+      <p class="save-note">Туршилтын хувилбар: хариулт энэ төхөөрөмжийн хөтөчид түр хадгалагдана. Одоогоор серверт илгээх, PDF үүсгэх, и-мэйл илгээх холболт хийгдээгүй.</p>
+    </section>
+
+    <section id="results-area" class="panel results-area" hidden>
+      <p class="eyebrow">Тестийн урьдчилсан боловсруулалт</p>
+      <h1>Таны хариултын нэгтгэл</h1>
+      <div id="results-warning" class="review-warning"></div>
+      <div id="results-content"></div>
+      <div class="results-actions">
+        <button id="export-json" class="button secondary" type="button">Хариултын JSON татах</button>
+        <button id="restart" class="button primary" type="button">Дахин эхлүүлэх</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> Сэтгэлийн боловсрол</span>
+    <span>Судалгааны үр дүн нь мэргэжил сонголтын эргэцүүлэлд туслах мэдээлэл болно.</span>
+  </footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
