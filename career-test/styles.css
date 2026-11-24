@@ -110,3 +110,16 @@ input:focus, select:focus { border-color:var(--brand-dark); box-shadow:0 0 0 3px
   .score-row { grid-template-columns:112px 1fr 26px; gap:8px; font-size:10px; }
   .site-footer { flex-direction:column; }
 }
+.radar-wrap { margin:14px 0 22px; padding:14px 12px 10px; border:1px solid var(--line); border-radius:18px; background:linear-gradient(180deg,#fcfefd,#f8fbf9); }
+.radar-chart { display:block; width:100%; max-width:560px; height:auto; margin:0 auto; overflow:visible; }
+.radar-grid { fill:none; stroke:#dfe9e5; stroke-width:1.2; }
+.radar-axis { stroke:#d4e1dc; stroke-width:1; }
+.radar-label { font-size:13px; font-weight:800; fill:var(--ink); }
+.radar-legend { display:flex; justify-content:center; flex-wrap:wrap; gap:14px; padding:4px 8px; }
+.radar-legend-item { display:inline-flex; align-items:center; gap:7px; color:var(--muted); font-size:11px; font-weight:700; }
+.radar-legend-item i { display:inline-block; width:9px; height:9px; border-radius:50%; }
+.radar-hint { text-align:center; color:var(--muted); font-size:10px; margin:8px 0 0; }
+@media(max-width:520px) {
+  .radar-wrap { padding:6px 4px 10px; }
+  .radar-label { font-size:15px; }
+}
