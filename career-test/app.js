@@ -209,8 +209,55 @@ function renderScores(title, scores) {
     <div class="bar-track"><div class="bar-fill" style="width:${item.max ? (item.score / item.max * 100) : 0}%;background:${item.color}"></div></div>
     <span class="score-value">${item.score}/${item.max}</span>
   </div>`).join("");
-  return `<section class="result-section"><h2>${title}</h2>${rows}</section>`;
+  return `<section class="result-section"><h2>${title}</h2>${renderRadar(title, [{label:title, scores, color:"#327c79"}])}${rows}</section>`;
 }
+function renderRadar(title, series) {
+  const center = { x: 260, y: 190 };
+  const radius = 122;
+  const axisAngle = (index) => (-90 + index * 60) * Math.PI / 180;
+  const point = (index, fraction) => ({
+    x: center.x + Math.cos(axisAngle(index)) * radius * fraction,
+    y: center.y + Math.sin(axisAngle(index)) * radius * fraction
+  });
+  const rings = [0.25, 0.5, 0.75, 1].map((fraction) => {
+    const pts = RI.map((_, i) => {
+      const p = point(i, fraction);
+      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }).join(" ");
+    return `<polygon points="${pts}" class="radar-grid"></polygon>`;
+  }).join("");
+  const axes = RI.map((_, i) => {
+    const p = point(i, 1);
+    return `<line x1="${center.x}" y1="${center.y}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" class="radar-axis"></line>`;
+  }).join("");
+  const labels = RI.map((type, i) => {
+    const p = point(i, 1.28);
+    const anchor = p.x < center.x - 12 ? "end" : (p.x > center.x + 12 ? "start" : "middle");
+    return `<text x="${p.x.toFixed(1)}" y="${(p.y + 4).toFixed(1)}" text-anchor="${anchor}" class="radar-label">${type.code}</text>`;
+  }).join("");
+  const plots = series.map((item) => {
+    const pts = item.scores.map((score, i) => {
+      const p = point(i, score.max ? Math.max(0, Math.min(1, score.score / score.max)) : 0);
+      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    }).join(" ");
+    const markers = item.scores.map((score, i) => {
+      const p = point(i, score.max ? Math.max(0, Math.min(1, score.score / score.max)) : 0);
+      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.3" fill="${item.color}"></circle>`;
+    }).join("");
+    return `<polygon points="${pts}" fill="${item.color}" fill-opacity=".16" stroke="${item.color}" stroke-width="3" stroke-linejoin="round"></polygon>${markers}`;
+  }).join("");
+  const legend = series.map((item) => `<span class="radar-legend-item"><i style="background:${item.color}"></i>${esc(item.label)}</span>`).join("");
+  return `<div class="radar-wrap">
+    <svg class="radar-chart" viewBox="0 0 520 390" role="img" aria-label="${esc(title)} — RIASEC зургаан хэв шинжийн радарын график">
+      <g>${rings}${axes}${plots}</g>
+      <circle cx="${center.x}" cy="${center.y}" r="3" fill="#71827f"></circle>
+      ${labels}
+    </svg>
+    <div class="radar-legend">${legend}</div>
+    <p class="radar-hint">Тэнхлэг бүрийн утгыг тухайн үнэлгээний боломжит дээд оноонд харьцуулан дүрсэлсэн.</p>
+  </div>`;
+}
+
 function buildResults() {
   const interest = makeScores("interest");
   const ability = makeScores("ability");
@@ -262,6 +309,11 @@ function showResults() {
     renderScores("Тест №1 · Мэргэжилд чиглэсэн хүсэл сонирхол", results.interest) +
     renderScores("Тест №2 · Өөрийн үнэлсэн чадавх", results.ability) +
     renderScores("Тест №3 · Мэргэжлийн хэв шинж", results.profile) +
+    renderRadar("Гурван үнэлгээний харьцуулалт", [
+      { label: "Сонирхол", scores: results.interest, color: "#327c79" },
+      { label: "Чадавх", scores: results.ability, color: "#D18A56" },
+      { label: "Хэв шинж", scores: results.profile, color: "#738CC7" }
+    ]) +
     `<section class="result-section"><h2>Гурван үнэлгээний харьцуулалт</h2>
       <p class="section-description">Энэ зураглал нь хэв шинж бүр гурван үнэлгээний эхний гуравт хэдэн удаа орсныг харуулна. Эх аргачлалд гурван үнэлгээг нэг тоон оноонд нэгтгэх жин, томьёо заагаагүй тул нийлмэл оноо зохиож тооцоогүй.</p>
       ${comparisonRows}
