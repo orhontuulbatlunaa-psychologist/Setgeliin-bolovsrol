@@ -1,4 +1,5 @@
 import { ASSESSMENT, RI, QUESTION_COUNTS } from "./data.js";
+import { calculateAssessmentResults } from "./scoring.js";
 
 const $ = (selector) => document.querySelector(selector);
 const registration = $("#registration");
@@ -174,35 +175,6 @@ function missingInSection(section) {
   return expected - Object.keys(answers[section]).length;
 }
 
-function makeScores(section) {
-  if (section === "profile") {
-    const scores = RI.map((type, index) => ({
-      ...type,
-      score: Object.entries(answers.profile).reduce((sum, [pairIndex, choice]) => {
-        return sum + (ASSESSMENT.profilePairs[Number(pairIndex)][choice][0] === index + 1 ? 1 : 0);
-      }, 0),
-      max: 42
-    }));
-    return scores;
-  }
-  const groups = section === "interest" ? ASSESSMENT.interestGroups : ASSESSMENT.abilityGroups;
-  return groups.map((items, gi) => {
-    let score = 0;
-    let max = 0;
-    items.forEach((_, qi) => {
-      const key = questionKey(gi, qi);
-      const allowed = section === "interest" && gi === 0 && (qi === 3 || qi === 5) ? [0,1,2] : [0,1,2,3];
-      score += Number(answers[section][key] ?? 0);
-      max += Math.max(...allowed);
-    });
-    return { ...RI[gi], score, max };
-  });
-}
-function topThree(scores) {
-  const sorted = [...scores].sort((a,b) => b.score - a.score);
-  const cut = sorted[Math.min(2, sorted.length - 1)]?.score ?? -1;
-  return sorted.filter((item) => item.score >= cut);
-}
 function renderScores(title, scores) {
   const rows = scores.map((item) => `<div class="score-row">
     <span class="score-name">${item.code} · ${item.short}</span>
@@ -260,20 +232,8 @@ function renderRadar(title, series) {
 }
 
 function buildResults() {
-  const interest = makeScores("interest");
-  const ability = makeScores("ability");
-  const profile = makeScores("profile");
-  const tops = {
-    interest: topThree(interest).map((x) => x.code),
-    ability: topThree(ability).map((x) => x.code),
-    profile: topThree(profile).map((x) => x.code)
-  };
-  const comparison = RI.map((type) => ({
-    ...type,
-    appearances: [tops.interest, tops.ability, tops.profile].filter((list) => list.includes(type.code)).length
-  })).sort((a,b) => b.appearances - a.appearances);
   return {
-    interest, ability, profile, tops, comparison,
+    ...calculateAssessmentResults(ASSESSMENT, answers),
     sourceReview: ASSESSMENT.sourceReview,
     responseCount: totalAnswered()
   };
