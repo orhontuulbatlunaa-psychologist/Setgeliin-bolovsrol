@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Админ хяналт | Сэтгэлийн боловсрол</title>
+  <link rel="stylesheet" href="./admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <a href="../../" class="brand"><img src="../../assets/sb-logo.svg" alt=""><span><b>Сэтгэлийн боловсрол</b><small>АДМИНЫ ХЯНАЛТЫН ХЭСЭГ</small></span></a>
+    <button id="logout" class="button light" hidden>Гарах</button>
+  </header>
+  <main class="container">
+    <section id="login-panel" class="panel login-panel">
+      <p class="eyebrow">Хамгаалалттай нэвтрэлт</p>
+      <h1>Админ хяналт</h1>
+      <p class="muted">Тест бөглөсөн сурагчдын хүсэлтийг шалгахын тулд нууц үгээ оруулна уу.</p>
+      <form id="login-form">
+        <label>Админы нууц үг
+          <input type="password" id="admin-password" autocomplete="current-password" required minlength="16">
+        </label>
+        <button class="button primary" type="submit">Нэвтрэх</button>
+        <p id="login-error" class="error" role="alert"></p>
+      </form>
+    </section>
+    <section id="dashboard" hidden>
+      <div class="dashboard-head">
+        <div><p class="eyebrow">Сурагчдын тестийн хүсэлт</p><h1>Хяналтын самбар</h1><p class="muted">Хүлээн авсан хүсэлтийг шалгаж, шаардлагатай бол буцаана. Зөвшөөрсөн тайлангийн автомат илгээлт PDF болон и-мэйл холболт хийгдсэний дараа идэвхжинэ.</p></div>
+        <button id="refresh" class="button light">Шинэчлэх</button>
+      </div>
+      <div class="notice"><b>Хөгжүүлэлтийн төлөв:</b> Хүсэлт хадгалах болон админы хяналт серверт холбогдсон. PDF тайлан үүсгэх, Resend и-мэйл илгээлтийн pipeline одоогоор холбогдоогүй. Энэ самбарыг production хяналтад хараахан ашиглахгүй.</div>
+      <div class="toolbar">
+        <div id="counts" class="counts"></div>
+        <select id="status-filter" aria-label="Хүсэлтийн төлөв">
+          <option value="pending">Хүлээгдэж буй</option>
+          <option value="approved">Зөвшөөрсөн</option>
+          <option value="rejected">Буцаасан</option>
+        </select>
+      </div>
+      <div id="submission-list" class="submission-list" aria-live="polite"></div>
+      <p id="dashboard-error" class="error" role="alert"></p>
+    </section>
+  </main>
+  <script src="./admin.js" defer></script>
+</body>
+</html>
