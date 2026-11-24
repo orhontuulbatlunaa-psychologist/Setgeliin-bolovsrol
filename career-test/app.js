@@ -251,7 +251,7 @@ function showResults() {
   testArea.hidden = true;
   resultsArea.hidden = false;
   const warning = $("#results-warning");
-  warning.innerHTML = `<strong>Эх материалын хяналт шаардлагатай.</strong> ${esc(ASSESSMENT.sourceReview.note)}<br><br>Энэ нь хөгжүүлэлтийн туршилтын хувилбар: хариулт серверт хадгалагдаагүй, админы зөвшөөрөл болон PDF/и-мэйл илгээлт холбогдоогүй. Энэ дэлгэцийн дүнг эцсийн мэргэжлийн тайлан гэж ашиглахгүй.`;
+  warning.innerHTML = `<strong>Онооны шатлалын засвар бүртгэгдсэн.</strong> ${esc(ASSESSMENT.sourceReview.note)}<br><br>Энэ нь хөгжүүлэлтийн туршилтын хувилбар: хариулт серверт хадгалагдаагүй, админы зөвшөөрөл болон PDF/и-мэйл илгээлт холбогдоогүй. Энэ дэлгэцийн дүнг эцсийн мэргэжлийн тайлан гэж ашиглахгүй.`;
   const { results } = latestPayload;
   const shared = results.comparison.filter((x) => x.appearances === 3).map((x) => x.code);
   const summary = `<div class="student-summary">
