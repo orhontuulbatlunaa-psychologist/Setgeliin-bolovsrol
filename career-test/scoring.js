@@ -100,17 +100,21 @@ export function calculateAssessmentResults(assessment, answers) {
     totalAssessments: 3
   })).sort((a, b) => b.appearances - a.appearances);
 
-  const overallTop = rankTopThree(comparison);
-  const highestFrequency = overallTop[0]?.appearances ?? 0;
+  const sortedComparison = [...comparison].sort((a, b) => b.appearances - a.appearances);
+  const highestFrequency = sortedComparison[0]?.appearances ?? 0;
+  const dominantItems = sortedComparison.filter((item) => item.appearances === highestFrequency);
+  const remainingItems = sortedComparison.filter((item) => item.appearances < highestFrequency);
+  // Зонхилох хэв шинж тэнцвэл бүгдийг нь хадгална. Тэдний дараа давтамжаар
+  // хоёр хэв шинжийг авна; хоёр дахь байранд давтамж тэнцсэн бол тэнцсэн бүгдийг хадгална.
+  const secondaryThreshold = remainingItems[Math.min(1, remainingItems.length - 1)]?.appearances;
+  const secondaryItems = secondaryThreshold === undefined
+    ? []
+    : remainingItems.filter((item) => item.appearances >= secondaryThreshold);
   const generalProfile = {
-    dominant: overallTop
-      .filter((item) => item.appearances === highestFrequency)
-      .map((item) => item.code),
-    secondary: overallTop
-      .filter((item) => item.appearances < highestFrequency)
-      .map((item) => item.code),
-    ranked: overallTop.map((item) => item.code),
-    rule: "3 тест тус бүрийн эхний 3 хэв шинжийн давтамж (0–3)-г тоолж, хамгийн их давтамжтайг зонхилох, дараагийн өндөр давтамжтай хоёрыг дагалдах хэв шинжээр тодорхойлов. Тэнцсэн үр дүнг таслаагүй."
+    dominant: dominantItems.map((item) => item.code),
+    secondary: secondaryItems.map((item) => item.code),
+    ranked: [...dominantItems, ...secondaryItems].map((item) => item.code),
+    rule: "3 тест тус бүрийн эхний 3 хэв шинжийн давтамж (0–3)-г тоолно. Хамгийн их давтамжтай хэв шинж(үүд) зонхилох; тэдний дараа давтамжаар эхний хоёр хэв шинж дагалдах болно. Давтамж тэнцсэн хэв шинжүүдийг хасахгүй."
   };
 
   return { interest, ability, profile, tops, comparison, generalProfile };
