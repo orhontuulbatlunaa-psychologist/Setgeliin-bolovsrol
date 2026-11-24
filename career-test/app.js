@@ -254,6 +254,7 @@ function renderRadar(title, series) {
       ${labels}
     </svg>
     <div class="radar-legend">${legend}</div>
+    <div class="radar-types">${RI.map((type) => `<span><b>${type.code}</b> ${type.short}</span>`).join("")}</div>
     <p class="radar-hint">Тэнхлэг бүрийн утгыг тухайн үнэлгээний боломжит дээд оноонд харьцуулан дүрсэлсэн.</p>
   </div>`;
 }
