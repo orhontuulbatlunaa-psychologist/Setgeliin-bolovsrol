@@ -154,7 +154,7 @@ module.exports = async function reviewSubmission(req, res) {
       return await sendApprovedReport({ req, res, record, reviewNote, retry: false });
     }
 
-    if (record.review_status !== "approved" || !["failed", "waiting_report"].includes(record.email_status)) {
+    if (record.review_status !== "approved" || !["failed", "waiting_report", "sending"].includes(record.email_status)) {
       if (record.review_status === "approved" && record.email_status === "sent") {
         return sendJson(res, 200, { ok: true, submissionCode: record.submission_code, reviewStatus: "approved", emailStatus: "sent", message: "Тайлан өмнө нь амжилттай илгээгдсэн байна." });
       }
