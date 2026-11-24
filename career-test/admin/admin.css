@@ -3,3 +3,20 @@
 .container{width:min(1000px,calc(100% - 28px));margin:34px auto 70px}.panel{background:#fffefa;border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,38px);box-shadow:0 18px 50px #263c3a0a}.login-panel{max-width:520px;margin:70px auto}.eyebrow{color:var(--green);font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:800;margin:0 0 8px}h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(30px,5vw,44px);margin:0 0 10px}.muted{color:var(--muted);font-size:13px}.login-panel form{display:grid;gap:14px;margin-top:22px}.login-panel label{font-size:13px;font-weight:700}.login-panel input{display:block;width:100%;margin-top:7px;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:10px;font:inherit}.button{border:0;border-radius:999px;padding:11px 18px;font:inherit;font-size:13px;font-weight:750;cursor:pointer}.primary{background:var(--green);color:white}.light{background:#edf5f2;color:var(--green)}.button:disabled{opacity:.4;cursor:not-allowed}.error{color:#a23a35;font-size:12px;min-height:18px}
 .dashboard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}.dashboard-head .muted{max-width:650px}.notice{margin:22px 0;border:1px solid #e9d7af;background:#fff9e9;color:#725c2c;border-radius:14px;padding:14px 16px;font-size:12px}.toolbar{display:flex;justify-content:space-between;align-items:center;margin:20px 0;gap:15px}.counts{color:var(--muted);font-size:12px}.toolbar select{padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fffefa;font:inherit;color:inherit}.submission-list{display:grid;gap:12px}.submission{background:#fffefa;border:1px solid var(--line);border-radius:16px;padding:18px}.submission-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}.submission h2{font-size:17px;margin:0 0 5px}.submission p{margin:4px 0;color:var(--muted);font-size:12px}.code{font-size:11px;color:var(--green);font-weight:800}.status{display:inline-block;border-radius:999px;background:#eef5f2;padding:5px 10px;color:var(--green);font-size:10px;font-weight:800}.scores{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.score{background:#f5f8f5;border-radius:10px;padding:10px}.score b{display:block;font-size:12px}.score span{display:block;font-size:11px;color:var(--muted);margin-top:2px}.actions{display:flex;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.note{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;min-height:56px}.empty{padding:36px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center;font-size:13px}
 @media(max-width:650px){.dashboard-head{display:block}.dashboard-head button{margin-top:10px}.scores{grid-template-columns:1fr}.submission-head{display:block}.status{margin-top:8px}}
+
+.score-details{border-top:1px solid var(--line);padding-top:10px;margin-top:8px}
+.score-details summary{cursor:pointer;font-size:12px;font-weight:750;color:var(--green);padding:5px 0}
+.score-breakdown{margin:12px 0 16px}
+.score-breakdown h3{font-size:12px;margin:0 0 8px}
+.score-breakdown-list{display:grid;gap:6px}
+.score-breakdown-row{display:grid;grid-template-columns:minmax(130px,210px) minmax(80px,1fr) 48px;align-items:center;gap:9px;font-size:11px}
+.score-breakdown-name{color:var(--muted)}
+.score-breakdown-track{height:8px;border-radius:99px;background:#edf2ef;overflow:hidden}
+.score-breakdown-fill{display:block;height:100%;border-radius:99px}
+.score-breakdown-value{text-align:right;font-variant-numeric:tabular-nums}
+.overall-profile{background:#f5f8f5;border-radius:12px;padding:12px;margin-top:16px}
+.overall-profile>b{font-size:12px}
+.overall-profile p{font-size:12px;color:#334b48;margin:5px 0}
+.frequency-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.frequency-list span{font-size:10px;border-radius:99px;background:#e7f0ec;padding:4px 8px;color:#42645e}
+@media(max-width:520px){.score-breakdown-row{grid-template-columns:105px minmax(50px,1fr) 42px;gap:6px;font-size:10px}}
