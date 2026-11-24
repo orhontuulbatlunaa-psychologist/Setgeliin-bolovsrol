@@ -8,12 +8,12 @@ on:
       - "career-test/**"
       - "api/**"
       - "supabase/**"
-      - "api/**"
-      - "supabase/**"
       - ".github/workflows/riasec-validation.yml"
   pull_request:
     paths:
       - "career-test/**"
+      - "api/**"
+      - "supabase/**"
 
 jobs:
   validate:
@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Check JavaScript syntax
+      - name: Check assessment JavaScript syntax
         working-directory: career-test
         run: |
           node --check ./data.js
@@ -31,7 +31,7 @@ jobs:
           node --check ./app.js
           node --check ./validate-data.mjs
       - name: Check server JavaScript syntax
-        run: find api -name "*.js" -type f -exec node --check {} \\\;
+        run: find api -name "*.js" -type f -print0 | xargs -0 -n1 node --check
       - name: Validate source counts and scoring rules
         working-directory: career-test
         run: node ./validate-data.mjs
