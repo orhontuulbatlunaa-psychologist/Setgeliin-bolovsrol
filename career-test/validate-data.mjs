@@ -52,6 +52,28 @@ assert.ok(
 );
 assert.equal(zeroResult.comparison.length, 6);
 
+const valuesForSums = (sums) => Object.fromEntries(
+  sums.flatMap((sum, gi) => {
+    const values = [];
+    let remaining = sum;
+    for (let qi = 0; qi < 6; qi += 1) {
+      const value = Math.min(3, remaining);
+      values.push([`${gi + 1}-${qi + 1}`, value]);
+      remaining -= value;
+    }
+    assert.equal(remaining, 0, "жишиг бүлгийн нийлбэр 18-аас их байж болохгүй");
+    return values;
+  })
+);
+const manualAnswers = {
+  interest: valuesForSums([9, 11, 7, 17, 14, 10]),
+  ability: valuesForSums([3, 13, 4, 16, 11, 17]),
+  profile: Object.fromEntries(ASSESSMENT.profilePairs.map((_, index) => [String(index), 0]))
+};
+const manualScores = calculateAssessmentResults(ASSESSMENT, manualAnswers);
+assert.deepEqual(manualScores.interest.map((item) => item.score), [9, 11, 7, 17, 14, 10]);
+assert.deepEqual(manualScores.ability.map((item) => item.score), [3, 13, 4, 16, 11, 17]);
+
 const verifiedManualExample = summarizeGeneralProfile({
   interest: ["S", "E", "I"],
   ability: ["C", "S", "I"],
