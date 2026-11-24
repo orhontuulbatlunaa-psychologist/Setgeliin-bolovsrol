@@ -60,9 +60,7 @@ function renderRatingSection(section) {
     const label = RI[gi];
     const cards = group.map((question, qi) => {
       const key = questionKey(gi, qi);
-      const isReviewQuestion = section === "interest" && gi === 0 && (qi === 3 || qi === 5);
-      // The source Word table has only 0, 1, 2 in these two cells; do not silently add 3.
-      const available = isReviewQuestion ? scale.filter((x) => x.value <= 2) : scale;
+      const available = scale;
       const options = available.map((option) => {
         const selected = answers[section][key] === option.value;
         return `<button type="button" class="scale-option ${selected ? "selected" : ""}" data-kind="${section}" data-key="${key}" data-value="${option.value}" aria-pressed="${selected}">
