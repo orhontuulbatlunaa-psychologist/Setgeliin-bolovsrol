@@ -1,0 +1,125 @@
+const $ = (s) => document.querySelector(s);
+const loginPanel = $("#login-panel");
+const dashboard = $("#dashboard");
+const loginForm = $("#login-form");
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    credentials: "same-origin",
+    ...options,
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) }
+  });
+  let data = {};
+  try { data = await response.json(); } catch {}
+  if (!response.ok) {
+    const error = new Error(data.error || "Хүсэлт амжилтгүй.");
+    error.status = response.status;
+    throw error;
+  }
+  return data;
+}
+function setLoggedIn(value) {
+  loginPanel.hidden = value;
+  dashboard.hidden = !value;
+  $("#logout").hidden = !value;
+}
+function formatDate(value) {
+  try {
+    return new Intl.DateTimeFormat("mn-MN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+  } catch { return value; }
+}
+function createNode(tag, className, value) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (value !== undefined) node.textContent = String(value);
+  return node;
+}
+function bestCodes(items) {
+  return (items || []).map((x) => x.code).join(" · ") || "—";
+}
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  $("#login-error").textContent = "";
+  try {
+    await api("/api/admin/login", { method: "POST", body: JSON.stringify({ password: $("#admin-password").value }) });
+    $("#admin-password").value = "";
+    setLoggedIn(true);
+    await loadSubmissions();
+  } catch (error) {
+    $("#login-error").textContent = error.message;
+  }
+});
+$("#logout").addEventListener("click", async () => {
+  try { await api("/api/admin/logout", { method: "POST", body: "{}" }); } catch {}
+  setLoggedIn(false);
+});
+$("#refresh").addEventListener("click", loadSubmissions);
+$("#status-filter").addEventListener("change", loadSubmissions);
+
+function createCard(row) {
+  const card = createNode("article", "submission");
+  const head = createNode("div", "submission-head");
+  const left = document.createElement("div");
+  left.append(
+    createNode("h2", "", row.full_name),
+    createNode("p", "", row.grade + "-р анги · " + row.group_name + " бүлэг · " + row.email + (row.phone ? " · " + row.phone : "")),
+    createNode("div", "code", row.submission_code + " · " + formatDate(row.created_at))
+  );
+  const badge = createNode("span", "status", row.review_status + " · " + row.email_status);
+  head.append(left, badge);
+  card.append(head);
+
+  const scores = createNode("div", "scores");
+  const tops = row.results && row.results.tops ? row.results.tops : {};
+  [["Сонирхол","interest"],["Чадавх","ability"],["Хэв шинж","profile"]].forEach(([label,key]) => {
+    const box = createNode("div", "score");
+    box.append(createNode("b", "", label), createNode("span", "", bestCodes(tops[key])));
+    scores.append(box);
+  });
+  card.append(scores);
+  if (row.review_note) card.append(createNode("p", "", "Тайлбар: " + row.review_note));
+
+  const actions = createNode("div", "actions");
+  if (row.review_status === "pending") {
+    const note = document.createElement("textarea");
+    note.className = "note";
+    note.placeholder = "Админы тэмдэглэл (сонголтоор)";
+    note.value = row.review_note || "";
+    const reject = createNode("button", "button light", "Буцаах");
+    reject.addEventListener("click", () => review(row.id, "reject", note.value));
+    const approve = createNode("button", "button primary", "Зөвшөөрөх");
+    approve.disabled = true;
+    approve.title = "PDF тайлан болон имэйл илгээлтийн холболт дуусаагүй.";
+    const hint = createNode("p", "", "Зөвшөөрөх товч PDF тайлан болон имэйл илгээлт бүрэн холбогдсоны дараа идэвхжинэ.");
+    actions.append(note, reject, approve, hint);
+  }
+  card.append(actions);
+  return card;
+}
+async function review(id, action, reviewNote) {
+  if (!confirm("Энэ хүсэлтийг буцаах уу?")) return;
+  try {
+    await api("/api/admin/review", { method: "POST", body: JSON.stringify({ id, action, reviewNote }) });
+    await loadSubmissions();
+  } catch (error) {
+    $("#dashboard-error").textContent = error.message;
+  }
+}
+async function loadSubmissions() {
+  $("#dashboard-error").textContent = "";
+  $("#submission-list").replaceChildren(createNode("div", "empty", "Хүсэлтүүдийг ачаалж байна…"));
+  try {
+    const status = $("#status-filter").value;
+    const data = await api("/api/admin/submissions?status=" + encodeURIComponent(status));
+    const list = $("#submission-list");
+    list.replaceChildren(...data.submissions.map(createCard));
+    $("#counts").textContent = data.submissions.length + " хүсэлт харуулж байна (сүүлийн 100 хүртэл).";
+    if (!data.submissions.length) list.replaceChildren(createNode("div", "empty", "Энэ төлөвт хүсэлт алга байна."));
+    setLoggedIn(true);
+  } catch (error) {
+    if (error.status === 401) { setLoggedIn(false); return; }
+    $("#dashboard-error").textContent = error.message;
+    $("#submission-list").replaceChildren();
+  }
+}
+loadSubmissions();
