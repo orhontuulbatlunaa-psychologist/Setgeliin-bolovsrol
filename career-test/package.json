@@ -1,0 +1,8 @@
+{
+  "name": "setgeliin-bolovsrol-career-test",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate:riasec": "node ./validate-data.mjs"
+  }
+}
