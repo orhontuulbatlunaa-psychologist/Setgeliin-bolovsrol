@@ -180,7 +180,8 @@ function footer(page, code) {
 }
 
 function page(inner, pageNo, code, extra = "") {
-  return `<section class="page ${extra}">${inner}${footer(pageNo, code)}</section>`;
+  // Each authored page body already includes its page footer.
+  return `<section class="page ${extra}">${inner}</section>`;
 }
 
 function typeCards(codes) {
