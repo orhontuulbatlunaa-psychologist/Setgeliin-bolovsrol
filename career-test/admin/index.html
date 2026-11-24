@@ -16,7 +16,7 @@
     <section id="login-panel" class="panel login-panel">
       <p class="eyebrow">Хамгаалалттай нэвтрэлт</p>
       <h1>Админ хяналт</h1>
-      <p class="muted">Тест бөглөсөн сурагчдын хүсэлтийг шалгахын тулд нууц үгээ оруулна уу.</p>
+      <p class="muted">Сурагчдын хариулт, оноолтыг шалгаж, тайлан илгээх үйлдлийг удирдана уу.</p>
       <form id="login-form">
         <label>Админы нууц үг
           <input type="password" id="admin-password" autocomplete="current-password" required minlength="16">
@@ -30,7 +30,7 @@
         <div><p class="eyebrow">Сурагчдын тестийн хүсэлт</p><h1>Хяналтын самбар</h1><p class="muted">Хүлээн авсан хүсэлтийг шалгаж, шаардлагатай бол буцаана. Зөвшөөрсөн тайлангийн автомат илгээлт PDF болон и-мэйл холболт хийгдсэний дараа идэвхжинэ.</p></div>
         <button id="refresh" class="button light">Шинэчлэх</button>
       </div>
-      <div class="notice"><b>Хөгжүүлэлтийн төлөв:</b> Хүсэлт хадгалах болон админы хяналт серверт холбогдсон. PDF тайлан үүсгэх, Resend и-мэйл илгээлтийн pipeline одоогоор холбогдоогүй. Энэ самбарыг production хяналтад хараахан ашиглахгүй.</div>
+      <div class="notice"><b>Тохиргооны санамж:</b> PDF үүсгэх, Supabase-ийн private хадгалалт болон Resend имэйл илгээх урсгал кодоор холбогдсон. Бодит илгээлтийн өмнө Vercel Environment Variables-д Supabase, Resend, EMAIL_FROM болон APP_ORIGIN утгуудыг тохируулж, илгээгч домэйныг баталгаажуулан end-to-end туршилт хийнэ.</div>
       <div class="toolbar">
         <div id="counts" class="counts"></div>
         <select id="status-filter" aria-label="Хүсэлтийн төлөв">
