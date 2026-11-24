@@ -73,6 +73,39 @@ function countAppearances(code, tops) {
   return tops.filter((codes) => codes.includes(code)).length;
 }
 
+const intersect = (left = [], right = []) => left.filter((code) => right.includes(code));
+
+export function compareAssessmentProfiles(tops) {
+  const interestAbility = intersect(tops.interest, tops.ability);
+  const interestProfile = intersect(tops.interest, tops.profile);
+  const abilityProfile = intersect(tops.ability, tops.profile);
+  const commonAcrossAll = intersect(interestAbility, tops.profile);
+
+  let pattern = "partial-overlap";
+  if (commonAcrossAll.length) pattern = "three-way-overlap";
+  else if (interestAbility.length && !intersect(interestAbility, tops.profile).length) {
+    pattern = "interest-ability-aligned-profile-differs";
+  } else if (!interestAbility.length && !interestProfile.length && !abilityProfile.length) {
+    pattern = "three-way-divergence";
+  }
+
+  const descriptions = {
+    "three-way-overlap": "Сонирхол, чадавх болон мэргэжлийн хэв шинжийн үр дүнд нийтлэг хэв шинж байна. Энэ нь гурван үнэлгээ хоорондоо уялдаж байгааг илтгэх эерэг дохио; нийтлэг хэв шинжүүдийн давтамжийг ерөнхий дүгнэлтэд ашиглав.",
+    "interest-ability-aligned-profile-differs": "Сонирхол болон өөрийн үнэлсэн чадавхийн хэв шинжүүд хоорондоо нийцэж байгаа боловч мэргэжлийн хэв шинжийн үнэлгээ өөр байна. Эх аргачлалд үүнийг мэргэжлийн нэр сонгохдоо сонирхол, чадавхийг харгалзаагүй эсвэл мэргэжлийн талаарх мэдлэг дутмаг байсантай холбоотой байж болох боломж гэж тайлбарладаг. Энэ нь баттай шалтгаан биш тул сурагч мэргэжлүүдийн талаар нэмж судлах нь зүйтэй.",
+    "three-way-divergence": "Гурван үнэлгээний эхний хэв шинжүүд хоорондоо давхцахгүй байна. Эх аргачлалд ийм зөрүү нь сонирхол, чадавх хоёрын нийцэл сул, сонирхол эсвэл чадавхи бүрэн танигдаагүй/төлөвшөөгүй байж болохыг эргэцүүлэх шаардлагатай гэж тайлбарладаг.",
+    "partial-overlap": "Гурван үнэлгээний зарим хэв шинж давхцаж, зарим нь зөрж байна. Давхцсан болон ялгаатай хэв шинжүүдийг тус бүрээр нь харж, мэргэжлийн сонголтын талаарх мэдлэгээ нэмж судлах нь зүйтэй."
+  };
+
+  return {
+    pattern,
+    commonAcrossAll,
+    interestAbility,
+    interestProfile,
+    abilityProfile,
+    narrative: descriptions[pattern]
+  };
+}
+
 export function summarizeGeneralProfile(tops) {
   const comparison = RI.map((type) => ({
     ...type,
@@ -120,6 +153,7 @@ export function calculateAssessmentResults(assessment, answers) {
 
   // Өөр өөр төрлийн raw оноог хооронд нь нэмэхгүй; зөвхөн тест тус бүрийн top-3 давтамжийг харьцуулна.
   const { comparison, generalProfile } = summarizeGeneralProfile(tops);
+  const profileComparison = compareAssessmentProfiles(tops);
 
-  return { interest, ability, profile, tops, comparison, generalProfile };
+  return { interest, ability, profile, tops, comparison, generalProfile, profileComparison };
 }
