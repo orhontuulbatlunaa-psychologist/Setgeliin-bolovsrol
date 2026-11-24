@@ -12,9 +12,6 @@ export function validateResponseSet(assessment, answers) {
         const key = questionKey(gi, qi);
         const value = answers[section]?.[key];
         if (![0,1,2,3].includes(value)) errors.push(`${section}:${key} хариулт дутуу эсвэл буруу.`);
-        if (section === "interest" && gi === 0 && (qi === 3 || qi === 5) && value === 3) {
-          errors.push(`${section}:${key} эх материалд байхгүй 3 оноо сонгогдсон.`);
-        }
       }
     }
   }
@@ -35,9 +32,8 @@ export function scoreRatingSection(assessment, answers, section) {
     let max = 0;
     items.forEach((_, qi) => {
       const key = questionKey(gi, qi);
-      const allowed = section === "interest" && gi === 0 && (qi === 3 || qi === 5) ? [0,1,2] : [0,1,2,3];
       score += Number(answers[section][key]);
-      max += Math.max(...allowed);
+      max += 3;
     });
     return { ...RI[gi], score, max };
   });
