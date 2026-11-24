@@ -19,6 +19,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Check JavaScript syntax
+        working-directory: career-test
+        run: |
+          node --check ./data.js
+          node --check ./scoring.js
+          node --check ./app.js
+          node --check ./validate-data.mjs
       - name: Validate source counts and scoring rules
         working-directory: career-test
         run: node ./validate-data.mjs
