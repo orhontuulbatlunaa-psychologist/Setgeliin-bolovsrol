@@ -123,3 +123,7 @@ input:focus, select:focus { border-color:var(--brand-dark); box-shadow:0 0 0 3px
   .radar-wrap { padding:6px 4px 10px; }
   .radar-label { font-size:15px; }
 }
+
+.radar-types { display:flex; justify-content:center; flex-wrap:wrap; gap:6px 12px; padding:7px 8px 0; }
+.radar-types span { color:var(--muted); font-size:10px; }
+.radar-types b { color:var(--brand-dark); margin-right:3px; }
