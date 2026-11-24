@@ -37,6 +37,25 @@ function createNode(tag, className, value) {
 function bestCodes(items) {
   return (items || []).map((x) => x.code).join(" · ") || "—";
 }
+function scoreBreakdown(title, items) {
+  const section = createNode("section", "score-breakdown");
+  section.append(createNode("h3", "", title));
+  const list = createNode("div", "score-breakdown-list");
+  (items || []).forEach((item) => {
+    const line = createNode("div", "score-breakdown-row");
+    const name = createNode("span", "score-breakdown-name", item.code + " · " + item.short);
+    const track = createNode("span", "score-breakdown-track");
+    const fill = createNode("span", "score-breakdown-fill");
+    fill.style.width = (item.max ? Math.max(0, Math.min(100, item.score / item.max * 100)) : 0) + "%";
+    fill.style.background = item.color;
+    track.append(fill);
+    const value = createNode("b", "score-breakdown-value", item.score + "/" + item.max);
+    line.append(name, track, value);
+    list.append(line);
+  });
+  section.append(list);
+  return section;
+}
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   $("#login-error").textContent = "";
@@ -77,6 +96,32 @@ function createCard(row) {
     scores.append(box);
   });
   card.append(scores);
+
+  const breakdown = createNode("details", "score-details");
+  const summary = createNode("summary", "", "Онооны дэлгэрэнгүйг харах");
+  breakdown.append(summary);
+  breakdown.append(
+    scoreBreakdown("Тест №1 · Сонирхол (бүлэг тус бүр 18 хүртэл)", row.results?.interest),
+    scoreBreakdown("Тест №2 · Чадавх (бүлэг тус бүр 18 хүртэл)", row.results?.ability),
+    scoreBreakdown("Тест №3 · Хэв шинж (сонголтын тоо / 42)", row.results?.profile)
+  );
+
+  const overall = createNode("div", "overall-profile");
+  const general = row.results?.generalProfile || {};
+  overall.append(
+    createNode("b", "", "Нэгдсэн хэв шинж"),
+    createNode("p", "", "Зонхилох: " + bestCodes((general.dominant || []).map((code) => ({code}))) ),
+    createNode("p", "", "Дагалдах: " + bestCodes((general.secondary || []).map((code) => ({code}))) )
+  );
+  const frequency = createNode("div", "frequency-list");
+  (row.results?.comparison || []).forEach((item) => {
+    const line = createNode("span", "", item.code + " · " + item.appearances + "/3");
+    frequency.append(line);
+  });
+  overall.append(frequency);
+  breakdown.append(overall);
+  card.append(breakdown);
+
   if (row.review_note) card.append(createNode("p", "", "Тайлбар: " + row.review_note));
 
   const actions = createNode("div", "actions");
