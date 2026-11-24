@@ -19,7 +19,7 @@ const sectionInfo = {
   },
   profile: {
     title: "Тест №3. Миний мэргэжлийн хэв шинж",
-    description: "Хос мэргэжил бүрээс танд арай илүү ойр санагдаж буй нэгийг сонгоно уу. Хоёулаа таалагдахгүй байсан ч харьцуулахад арай ойр нэгийг сонгох тухай эх зааврыг баримтална."
+    description: "Нийт 42 хос буюу 84 мэргэжлийн нэр байна. Хос бүрийн хоёр мэргэжлээс танд арай илүү ойр санагдаж буй нэгийг сонгоно. Хоёулаа таалагдахгүй байсан ч арай дээр гэж үзсэн нэгийг сонгох эх зааврыг баримтална. Нэг хос = нэг хариулт."
   }
 };
 const answers = { interest: {}, ability: {}, profile: {} };
@@ -213,9 +213,13 @@ function renderRadar(title, series) {
       const p = point(i, score.max ? Math.max(0, Math.min(1, score.score / score.max)) : 0);
       return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
     }).join(" ");
+    const distinctScores = [...new Set(item.scores.map((score) => score.score))].sort((a, b) => b - a);
     const markers = item.scores.map((score, i) => {
       const p = point(i, score.max ? Math.max(0, Math.min(1, score.score / score.max)) : 0);
-      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4.3" fill="${item.color}"></circle>`;
+      const rank = distinctScores.indexOf(score.score) + 1;
+      const markerRadius = rank === 1 ? 8 : rank === 2 ? 6 : rank === 3 ? 4.2 : 2.3;
+      const markerTitle = `${score.code}: ${score.score}/${score.max} оноо; ${rank <= 3 ? `${rank}-р өндөр онооны түвшин` : "бусад оноо"}`;
+      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${markerRadius}" fill="${item.color}" stroke="#ffffff" stroke-width="1.2"><title>${esc(markerTitle)}</title></circle>`;
     }).join("");
     return `<polygon points="${pts}" fill="${item.color}" fill-opacity=".16" stroke="${item.color}" stroke-width="3" stroke-linejoin="round"></polygon>${markers}`;
   }).join("");
@@ -228,7 +232,7 @@ function renderRadar(title, series) {
     </svg>
     <div class="radar-legend">${legend}</div>
     <div class="radar-types">${RI.map((type) => `<span><b>${type.code}</b> ${type.short}</span>`).join("")}</div>
-    <p class="radar-hint">Тэнхлэг бүрийн утгыг тухайн үнэлгээний боломжит дээд оноонд харьцуулан дүрсэлсэн.</p>
+    <p class="radar-hint">Хамгийн өндөр гурван өөр онооны түвшнийг томоос жижиг дугуйгаар тэмдэглэв. Тэнцсэн оноо ижил хэмжээтэй; бусад хэв шинж жижиг цэгээр харагдана.</p>
   </div>`;
 }
 
