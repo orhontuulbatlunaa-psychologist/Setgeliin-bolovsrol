@@ -21,14 +21,15 @@ const allZero = {
 };
 assert.deepEqual(validateResponseSet(ASSESSMENT, allZero), []);
 const zeroResult = calculateAssessmentResults(ASSESSMENT, allZero);
-assert.deepEqual(zeroResult.interest.map((x) => x.max), [16,18,18,18,18,18], "эх хүснэгтийн хоёр дутуу 3 оноог нэмж тооцож болохгүй");
+assert.deepEqual(zeroResult.interest.map((x) => x.max), [18,18,18,18,18,18], "сонирхлын бүх бүлэг зургаан асуулт × 3 оноо = 18 байна");
 assert.ok(zeroResult.ability.every((x) => x.max === 18));
 assert.equal(zeroResult.profile.reduce((sum, item) => sum + item.score, 0), 42, "42 хосоос тус бүр нэг сонголт тоологдоно");
 
-const invalid = structuredClone(allZero);
-invalid.interest["1-4"] = 3;
-assert.ok(validateResponseSet(ASSESSMENT, invalid).some((message) => message.includes("эх материалд байхгүй 3 оноо")));
-assert.throws(() => calculateAssessmentResults(ASSESSMENT, invalid), /бүрэн бус эсвэл буруу/);
+const maxScore = structuredClone(allZero);
+maxScore.interest["1-4"] = 3;
+maxScore.interest["1-6"] = 3;
+assert.deepEqual(validateResponseSet(ASSESSMENT, maxScore), [], "R бүлгийн 4, 6-р асуултад 3 оноог зөвшөөрнө");
+assert.equal(calculateAssessmentResults(ASSESSMENT, maxScore).interest[0].score, 6);
 assert.equal(rankTopThree(RI.map((item) => ({...item,score:10}))).length, 6, "тэнцүү оноотой хэв шинжийг алдагдуулахгүй");
 
 console.log("RIASEC source-data checks passed: 36 + 36 + 42 = 114; answer keys and scoring validations passed.");
