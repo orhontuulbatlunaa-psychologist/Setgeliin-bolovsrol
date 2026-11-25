@@ -1,6 +1,5 @@
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const chromium = require("@sparticuz/chromium");
 const puppeteer = require("puppeteer-core");
 
 async function renderAssessmentReportPdf({ student, results, submissionCode, generatedAt }) {
@@ -20,11 +19,23 @@ async function renderAssessmentReportPdf({ student, results, submissionCode, gen
 
   let browser;
   try {
+    const chromiumModule = await import("@sparticuz/chromium");
+    const chromium = chromiumModule.default;
+    if (!chromium || typeof chromium.executablePath !== "function") {
+      throw new TypeError("The @sparticuz/chromium package did not expose its default Chromium class.");
+    }
     browser = await puppeteer.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
+      args: await puppeteer.defaultArgs({ args: chromium.args, headless: "shell" }),
+      defaultViewport: {
+        deviceScaleFactor: 1,
+        hasTouch: false,
+        height: 1080,
+        isLandscape: false,
+        isMobile: false,
+        width: 1024
+      },
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless
+      headless: "shell"
     });
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: "networkidle0", timeout: 30000 });
