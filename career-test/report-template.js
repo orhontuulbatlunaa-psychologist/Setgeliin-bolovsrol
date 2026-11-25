@@ -276,22 +276,23 @@ function careerCards(codes, dominantCount = 2) {
 
 function labourTrendChart() {
   const growing = [
-    ["Их өгөгдлийн мэргэжилтэн", 120],
-    ["Финтек инженер", 93],
-    ["Хиймэл оюун, машин сургалтын мэргэжилтэн", 82],
-    ["Программ хангамж хөгжүүлэгч", 57],
-    ["Мэдээллийн аюулгүй байдлын менежментийн мэргэжилтэн", 53]
+    "Их өгөгдлийн мэргэжилтэн",
+    "Финтек инженер",
+    "Хиймэл оюун, машин сургалтын мэргэжилтэн",
+    "Программ хангамж, хэрэглээний программ хөгжүүлэгч",
+    "Аюулгүй байдлын менежментийн мэргэжилтэн"
   ];
   const declining = [
-    ["Шуудангийн үйлчилгээний ажилтан", -34],
-    ["Банкны теллер", -31],
-    ["Мэдээлэл шивэлтийн ажилтан", -26],
-    ["Касс, тасалбар борлуулалтын ажилтан", -20],
-    ["Захиргааны туслах, гүйцэтгэх нарийн бичгийн дарга", -20]
+    "Шуудангийн үйлчилгээний ажилтан",
+    "Банкны теллер",
+    "Мэдээлэл шивэлтийн ажилтан",
+    "Касс, тасалбар борлуулалтын ажилтан",
+    "Гүйцэтгэх нарийн бичгийн дарга"
   ];
-  const rows = (items, max, kind) => items.map(([label, value]) => `<div class="labour-bar-row"><span>${esc(label)}</span><div class="labour-bar-track"><i class="${kind}" style="width:${Math.abs(value) / max * 100}%"></i></div><b>${value > 0 ? "+" : ""}${value}%</b></div>`).join("");
-  return `<div class="labour-chart"><div><h4>2030 он хүртэл өсөх төлөвтэй ажлын байр</h4>${rows(growing, 120, "growth-bar")}</div><div><h4>Эрэлт нь буурах төлөвтэй ажлын байр</h4>${rows(declining, 40, "decline-bar")}</div><p>Хувиар илэрхийлсэн нь 2025–2030 оны цэвэр өсөлт/бууралтын төсөөлөл; Дэлхийн эдийн засгийн форумын ажил олгогчдын судалгаанд тулгуурласан.</p></div>`;
+  const rows = (items, kind) => items.map((label, index) => `<div class="labour-bar-row"><b class="trend-rank ${kind}">${index + 1}</b><span>${esc(label)}</span></div>`).join("");
+  return `<div class="labour-chart"><div><h4>Хурдан өсөх төлөвтэй ажлын байр</h4>${rows(growing, "growth-rank")}</div><div><h4>Эрэлт нь хурдан буурах төлөвтэй ажлын байр</h4>${rows(declining, "decline-rank")}</div><p>Дугаар нь 2025–2030 оны дэлхийн ажил олгогчдын судалгаанд дурдсан хамгийн хурдан өсөх болон буурах ажлын байрны эрэмбэ юм. Хувийн өсөлт, бууралтын хувь биш.</p></div>`;
 }
+
 function commonCodes(results) {
   const comparison = results.profileComparison || {};
   return comparison.commonAcrossAll || [];
@@ -431,7 +432,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     <div class="labour-stats">
       <div><small>МОНГОЛ УЛС · 2026 ОНЫ ТӨЛӨВ</small><b>82.6 мянга</b><span>Ажилтан авах хэрэгцээтэй ажлын байрны тооцоолол</span></div>
       <div><small>ДЭЛХИЙ · 2030 ОН ХҮРТЭЛ</small><b>+78 сая</b><span>170 сая шинээр бий болох, 92 сая шахагдах ажлын байрны цэвэр өсөлтийн төсөөлөл</span></div>
-      <div><small>ХИЙМЭЛ ОЮУН УХААН</small><b>1/4</b><span>Дэлхийн ажиллагчдын генератив хиймэл оюуны нөлөөлөлд ямар нэг хэмжээгээр өртөж болох хувь</span></div>
+      <div><small>ХИЙМЭЛ ОЮУН УХААН</small><b>24%</b><span>Дэлхийн нийт ажил эрхлэлтийн өртөж болох хувь; 3.3% нь хамгийн өндөр өртөлтийн ангилалд багтана</span></div>
     </div>
     ${labourTrendChart()}
     <div class="labour-columns">
@@ -830,11 +831,13 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   .labour-sources p{font-size:5.1pt;line-height:1.25}
   .labour-chart{display:grid;grid-template-columns:1fr 1fr;gap:3mm;padding:2.5mm 3.5mm;border:1px solid #e1e9e4;border-radius:3mm;margin:2.5mm 0}
   .labour-chart h4{font-size:6.5pt;color:#36584f;margin:0 0 1.3mm}
-  .labour-bar-row{display:grid;grid-template-columns:36mm 1fr 9mm;align-items:center;gap:1.2mm;margin:.8mm 0}
-  .labour-bar-row>span{font-size:5.2pt;line-height:1.12;color:#64736c}
-  .labour-bar-row>b{font-size:5.7pt;text-align:right;color:#38594f}
+  .labour-bar-row{display:grid;grid-template-columns:6mm 1fr;align-items:center;gap:1.5mm;margin:1mm 0}
+  .labour-bar-row>span{font-size:5.7pt;line-height:1.15;color:#64736c}
+  .trend-rank{display:grid;place-items:center;width:5mm;height:5mm;border-radius:50%;font-size:6pt;color:#fff}
   .labour-bar-track{height:2.2mm;background:#edf1ec;border-radius:2mm;overflow:hidden}
   .labour-bar-track i{display:block;height:100%;border-radius:2mm}
+  .growth-rank{background:#5d9b77}
+  .decline-rank{background:#d18a56}
   .growth-bar{background:#5d9b77}
   .decline-bar{background:#d18a56}
   .labour-chart>p{grid-column:1/-1;margin:.5mm 0 0;font-size:5pt;line-height:1.2;color:#89958e}
