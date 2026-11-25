@@ -274,6 +274,24 @@ function careerCards(codes, dominantCount = 2) {
   }).join("");
 }
 
+function labourTrendChart() {
+  const growing = [
+    ["Их өгөгдлийн мэргэжилтэн", 120],
+    ["Финтек инженер", 93],
+    ["Хиймэл оюун, машин сургалтын мэргэжилтэн", 82],
+    ["Программ хангамж хөгжүүлэгч", 57],
+    ["Мэдээллийн аюулгүй байдлын менежментийн мэргэжилтэн", 53]
+  ];
+  const declining = [
+    ["Шуудангийн үйлчилгээний ажилтан", -34],
+    ["Банкны теллер", -31],
+    ["Мэдээлэл шивэлтийн ажилтан", -26],
+    ["Касс, тасалбар борлуулалтын ажилтан", -20],
+    ["Захиргааны туслах, гүйцэтгэх нарийн бичгийн дарга", -20]
+  ];
+  const rows = (items, max, kind) => items.map(([label, value]) => `<div class="labour-bar-row"><span>${esc(label)}</span><div class="labour-bar-track"><i class="${kind}" style="width:${Math.abs(value) / max * 100}%"></i></div><b>${value > 0 ? "+" : ""}${value}%</b></div>`).join("");
+  return `<div class="labour-chart"><div><h4>2030 он хүртэл өсөх төлөвтэй ажлын байр</h4>${rows(growing, 120, "growth-bar")}</div><div><h4>Эрэлт нь буурах төлөвтэй ажлын байр</h4>${rows(declining, 40, "decline-bar")}</div><p>Хувиар илэрхийлсэн нь 2025–2030 оны цэвэр өсөлт/бууралтын төсөөлөл; Дэлхийн эдийн засгийн форумын ажил олгогчдын судалгаанд тулгуурласан.</p></div>`;
+}
 function commonCodes(results) {
   const comparison = results.profileComparison || {};
   return comparison.commonAcrossAll || [];
@@ -415,6 +433,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
       <div><small>ДЭЛХИЙ · 2030 ОН ХҮРТЭЛ</small><b>+78 сая</b><span>170 сая шинээр бий болох, 92 сая шахагдах ажлын байрны цэвэр өсөлтийн төсөөлөл</span></div>
       <div><small>ХИЙМЭЛ ОЮУН УХААН</small><b>1/4</b><span>Дэлхийн ажиллагчдын генератив хиймэл оюуны нөлөөлөлд ямар нэг хэмжээгээр өртөж болох хувь</span></div>
     </div>
+    ${labourTrendChart()}
     <div class="labour-columns">
       <div class="labour-panel growing"><h3>Эрэлт нь өсөх төлөвтэй салбар, мэргэжлүүд</h3><p class="panel-intro">Дэлхийн ажил олгогчдын 2025–2030 оны төсөөлөл болон технологи, хүн ам, эрчим хүчний шилжилтийн чиглэлд тулгуурласан жишээ.</p><ul>
         <li><b>Мэдээллийн технологи, өгөгдөл, хиймэл оюун:</b> хиймэл оюун ба машин сургалтын мэргэжилтэн, их өгөгдлийн шинжээч, програм хангамж хөгжүүлэгч, кибер аюулгүй байдлын мэргэжилтэн, өгөгдлийн сангийн инженер.</li>
@@ -436,6 +455,66 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     <div class="source-note labour-sources"><b>Судалгааны эх сурвалж</b><p>Гэр бүл, хөдөлмөр, нийгмийн хамгааллын яам, “2026 онд 82.6 мянган ажлын байранд ажилтан авах хэрэгцээ бий болно” (2026.06.04), mlsp.gov.mn/content/detail/4102; World Economic Forum, <i>The Future of Jobs Report 2025</i>, weforum.org/publications/the-future-of-jobs-report-2025/2-jobs-outlook; International Labour Organization, <i>Generative AI and Jobs: A Refined Global Index of Occupational Exposure</i> (2025.05.20), ilo.org/publications/generative-ai-and-jobs-refined-global-index-occupational-exposure. Олон улсын прогноз нь Монголын бүх салбарт ижил хэмжээгээр хэрэгжинэ гэсэн үг биш.</p></div>
     ${footer(10, code)}`;
 
+  const rankingUniversities = [
+    "Монгол Улсын Их Сургууль|Улаанбаатар",
+        "Шинжлэх ухаан, технологийн их сургууль|Улаанбаатар",
+        "Санхүү, эдийн засгийн их сургууль|Улаанбаатар",
+        "Анагаахын шинжлэх ухааны үндэсний их сургууль|Улаанбаатар",
+        "Хөдөө аж ахуйн их сургууль|Улаанбаатар",
+        "Монгол Улсын Боловсролын Их Сургууль|Улаанбаатар",
+        "Отгонтэнгэр их сургууль|Улаанбаатар",
+        "Соёл урлагийн их сургууль|Улаанбаатар",
+        "Хүрээ дээд сургууль|Улаанбаатар",
+        "Олон улсын Улаанбаатарын их сургууль|Улаанбаатар",
+        "Этүгэн их сургууль|Сүхбаатар",
+        "Ховд их сургууль|Ховд",
+        "Монголын олон улсын их сургууль|Улаанбаатар",
+        "Идэр их сургууль|Улаанбаатар",
+        "Удирдлагын академи|Улаанбаатар",
+        "Эм зүйн шинжлэх ухааны их сургууль|Улаанбаатар",
+        "Монгол-Германы хамтарсан ашигт малтмал, технологийн их сургууль|Улаанбаатар",
+        "Глобал манлайлал их сургууль|Улаанбаатар",
+        "Их Засаг их сургууль|Улаанбаатар",
+        "Соёл-Эрдэм дээд сургууль|Улаанбаатар",
+        "Улаанбаатарын улсын их сургууль|Улаанбаатар",
+        "Мандах их сургууль|Улаанбаатар",
+        "Хүмүүнлэгийн ухааны их сургууль|Улаанбаатар",
+        "Монголын үндэсний их сургууль|Улаанбаатар",
+        "Сити их сургууль|Улаанбаатар",
+        "Инженер, технологийн дээд сургууль|Улаанбаатар",
+        "Орхон их сургууль|Улаанбаатар",
+        "Дорнод их сургууль|Чойбалсан",
+        "Цэцээ гүн менежментийн институт|Улаанбаатар",
+        "Монгол Улсын Консерватори|Улаанбаатар",
+        "Номера институт|Улаанбаатар",
+        "Олон улс судлалын хүрээлэн|Улаанбаатар",
+        "Монголын үндэсний биеийн тамирын институт|Улаанбаатар",
+        "Эдийн засгийн үндэсний их сургууль|Улаанбаатар",
+        "Сан их сургууль|Улаанбаатар",
+        "Отч Манрамба их сургууль|Улаанбаатар",
+        "Мон-Алтиус институт|Улаанбаатар",
+        "Боловсрол, соёл, эрх зүйн дээд сургууль|Улаанбаатар",
+        "Аварга институт|Улаанбаатар",
+        "Ач анагаах ухааны их сургууль|Улаанбаатар",
+        "Шихихутуг хууль зүйн дээд сургууль|Улаанбаатар",
+        "Олон улсын эдийн засаг, бизнесийн их сургууль|Улаанбаатар",
+        "Засагт хан институт|Улаанбаатар",
+        "Хангай их сургууль|Улаанбаатар",
+        "Дархан их сургууль|Дархан",
+        "Энерэл анагаах ухааны дээд сургууль|Улаанбаатар",
+        "Улаанбаатар их сургууль|Улаанбаатар",
+        "Шинэ анагаах ухааны институт|Улаанбаатар",
+        "Үндэсний техникийн их сургууль|Улаанбаатар",
+        "Шинэ иргэншил политехник коллеж|Улаанбаатар"
+  ];
+  const rankingColumn = (start, end) => rankingUniversities.slice(start, end).map((entry, index) => { const [university, city] = entry.split("|"); return `<div class="rank-row"><b>${start + index + 1}</b><span>${esc(university)}</span><small>${esc(city)}</small></div>`; }).join("");
+  const universityRankings = `
+    ${pageHeader("ИХ, ДЭЭД СУРГУУЛИЙН МЭДЭЭЛЭЛ", "Монголын их, дээд сургуулиудын жагсаалт", "2026 оны uniRank-ийн Монгол Улсын жагсаалтаас эхний 50 байгууллагыг харуулав. Жагсаалтыг сургуулийн чанарын баталгаат үнэлгээтэй адилтгаж болохгүй.")}
+    <div class="ranking-explainer"><b>Эрэмбийг хэрхэн ойлгох вэ?</b><p>Энэ бол uniRank-ийн 2026 оны, веб орчин дахь харагдац зэрэг хараат бус веб хэмжүүрт тулгуурласан <b>академик бус жагсаалт</b> юм. Сургалтын чанар, магадлан итгэмжлэл, төгсөгчдийн ажил эрхлэлт, тухайн хөтөлбөрийн давуу талыг дангаар нотлохгүй.</p><p>Боловсролын яам 2026 оны хагас жилийн тайландаа үндэсний эрэмбэ, чансааг шинэчлэх өгөгдлийг бүрдүүлж, баталгаажуулах ажил үргэлжилж байгааг мэдээлсэн. Иймээс доорх веб жагсаалтыг Монгол Улсын албан ёсны үндэсний чанарын эрэмбэ гэж ойлгохгүй.</p></div>
+    <div class="rank-columns"><div>${rankingColumn(0,25)}</div><div>${rankingColumn(25,50)}</div></div>
+    <div class="ranking-source"><b>Эх сурвалж</b><p>uniRank, <i>2026 Mongolian University Ranking</i> (62 байгууллагын жагсаалт; энд эхний 50-ийг харуулав): www.unirank.org/mn/ranking/. Боловсрол, шинжлэх ухааны яам, 2026 оны хагас жилийн гүйцэтгэлийн тайлан: moe.gov.mn/post/176799. Жагсаалтын эрэмбэ нь вэб хэмжүүрийн дараалал болохоос чанарын гэрчилгээ, зөвлөмж биш.</p></div>
+    ${footer(11, code)}`;
+
   const admissions = `
     ${pageHeader("ИХ, ДЭЭД СУРГУУЛИЙН МЭДЭЭЛЭЛ", "Суралцах чиглэл ба элсэлтийн шаардлага", "Сургуулийн ерөнхий нэр хүндээс гадна сонгосон хөтөлбөрийн агуулга, элсэлтийн хичээл, босго оноо, нэмэлт шалгуур болон ажлын боломжийг хамтад нь харьцуулаарай.")}
     <div class="admission-intro"><b>Доорх жишээнүүд нь 2026–2027 оны хичээлийн жилийн албан ёсны элсэлтийн мэдээлэлд тулгуурлав.</b><p>Элсэлтийн хичээл, босго оноо жил бүр шинэчлэгдэж болох тул бүртгүүлэхээсээ өмнө тухайн хөтөлбөрийн хамгийн сүүлийн журамтай дахин тулгана.</p></div>
@@ -443,8 +522,9 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
       <article class="university-card"><h3>Монгол Улсын Их Сургууль · МУИС</h3><p><b>Судлах боломжтой чиглэл:</b> байгалийн ухаан, математик, мэдээллийн технологи, нийгэм-хүмүүнлэг, эрх зүй, бизнес, олон улсын харилцаа зэрэг олон салбарын бакалаврын хөтөлбөр.</p><p><b>Элсэлтийн нөхцөл:</b> 2026–2027 оны бакалаврын өдрийн элсэлтийн журам нийтлэгдсэн. Суурь болон дагалдах шалгалтын хослол, босго оноо нь сонгосон хөтөлбөрөөс хамаарч өөр байна; хөтөлбөрийн мэдээллийг элсэлтийн системээс тус бүр шалгана.</p><small>Албан ёсны эх сурвалж: elselt.num.edu.mn · burtgel.num.edu.mn</small></article>
       <article class="university-card"><h3>Шинжлэх Ухаан, Технологийн Их Сургууль · ШУТИС</h3><p><b>Судлах чиглэл:</b> инженерчлэл, технологи, хэрэглээний математик, статистик, үйлдвэрлэл, эрчим хүч, байгаль орчны инженерчлэл.</p><p><b>2026–2027 оны жишээ · Статистик:</b> суурь хичээл Математик эсвэл Физик — 490; дагалдах хичээл Нийгэм судлал эсвэл Англи хэл — 450. Сургалтын хугацаа 4 жил.</p><small>Албан ёсны эх сурвалж: sas.must.edu.mn/en/page/1093 · elselt.edu.mn</small></article>
       <article class="university-card"><h3>Анагаахын Шинжлэх Ухааны Үндэсний Их Сургууль · АШУҮИС</h3><p><b>Судлах чиглэл:</b> хүний их эмч, уламжлалт анагаах ухаан, сувилахуй, эм зүй, нийгмийн эрүүл мэнд болон эрүүл мэндийн тусламж үйлчилгээ.</p><p><b>2026–2027 оны жишээ · Хүний их эмч:</b> ЭЕШ-1 Хими эсвэл Математик — 490; ЭЕШ-2 Биологи эсвэл Физик — 490. <b>Уламжлалт анагаахын их эмч:</b> эхний бүлэг 440, хоёр дахь бүлэг 490.</p><small>Албан ёсны эх сурвалж: mnums.edu.mn/admission/requirements · admission.mnums.edu.mn</small></article>
-      <article class="university-card"><h3>Дотоод хэргийн их сургууль · ДХИС</h3><p><b>Судлах чиглэл:</b> хууль сахиулах, цагдаа, хил хамгаалалт, онцгой байдал, шүүхийн шийдвэр гүйцэтгэл, шинжлэн магадлах ухаан, сэтгэл судлал, нийгмийн ажил.</p><p><b>2026–2027 оны жишээ:</b> Сэтгэл судлал — Нийгэм судлал/Математик 490; Монгол хэл/Англи хэл 490. Нийгмийн ажил — Нийгэм судлал/Англи хэл 490; Монгол хэл/Математик 500. Төрийн тусгай албаны зарим хөтөлбөрт ур чадвар, бие бялдрын нэмэлт шалгалт шаардана.</p><small>Албан ёсны эх сурвалж: uia.gov.mn · elselt.uia.gov.mn · элсэлтийн журам (2026.03.30, №117)</small></article>
+      <article class="university-card"><h3>Дотоод хэргийн их сургууль · ДХИС</h3><p><b>Судлах чиглэл:</b> хууль сахиулах, цагдаа, хил хамгаалалт, онцгой байдал, шүүхийн шийдвэр гүйцэтгэл, шинжлэн магадлах ухаан, сэтгэл судлал, нийгмийн ажил.</p><p><b>2026–2027 оны жишээ · 4 жилийн хөтөлбөр:</b> Сэтгэл судлал — суурь Нийгэм судлал/Математик 490; дагалдах Монгол хэл/Англи хэл 490. Нийгмийн ажил — суурь Нийгэм судлал/Англи хэл 490; дагалдах Монгол хэл/Математик 500. Эдгээр хөтөлбөрт эрэгтэй 165 см, эмэгтэй 160 см-ээс доошгүй өндөр, эрүүл мэндийн үзлэг, сэтгэл зүйн сорил, ярилцлагын шалгуур хамаарна.</p><small>Албан ёсны эх сурвалж: uia.gov.mn · elselt.uia.gov.mn · элсэлтийн журам (2026.03.30, №117)</small></article>
     </div>
+    <div class="admission-a34"><b>2026.02.06-ны А/34 тушаалын хавсралтын жишээ</b><p>Программ хангамжийн инженерчлэлийн чиглэлд Математик/Физик — 490; Нийгэм судлал/Англи хэл — 450 онооны шаардлага бүхий шалгалтын бүлэг тусгасан. Энэ нь улсын хэмжээний мэргэжлийн чиглэлийн босго шаардлагын жишээ бөгөөд тухайн сургуулийн жилийн нэмэлт шалгуурыг орлохгүй.</p></div>
     <div class="admission-check"><b>Хөтөлбөрөө сонгохын өмнө дараах мэдээллийг заавал нягтлаарай</b><ol>
       <li>Хөтөлбөрийн нэр, индекс, суралцах хугацаа, сургалтын агуулга.</li>
       <li>Суурь болон дагалдах ЭЕШ-ын хичээл, хичээл тус бүрийн босго оноо.</li>
@@ -454,7 +534,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     </ol></div>
     <div class="admission-warning"><b>Босго оноо нь элсэх баталгаа биш</b><p>Босго оноо нь тухайн хөтөлбөрт өрсөлдөх доод шаардлагыг илэрхийлнэ. Элсэгчдийн онооны эрэмбэ, батлагдсан хяналтын тоо, нэмэлт шалгуур болон сургуулийн дотоод журмаар эцсийн шалгаруулалт хийгддэг.</p></div>
     <div class="admission-sources"><b>Эх сурвалжийн тэмдэглэл</b><p>МУИС-ийн 2026–2027 оны элсэлтийн журам: elselt.num.edu.mn; ШУТИС-ийн хөтөлбөр, суурь болон дагалдах хичээлийн жагсаалт: sas.must.edu.mn/en/page/1093; АШУҮИС-ийн 2026–2027 оны босго оноо, шалгалтын шаардлага: mnums.edu.mn/admission/requirements; ДХИС-ийн захирлын 2026.03.30-ны №117 тушаалын хавсралт: sis.uia.gov.mn/files/admission/2026-2027_оны_хичээлийн_жилийн_4_жил_иргэн.pdf. Энэ бол сонгосон хөтөлбөрүүдийн жишээ мэдээлэл бөгөөд бүх сургуулийн бүрэн жагсаалт биш.</p></div>
-    ${footer(11, code)}`;
+    ${footer(12, code)}`;
 
   const worksheet = `
     ${pageHeader("ТАНЫ ДАРААГИЙН АЛХАМ", "Мэргэжлээ судлах миний ажлын хуудас", "Энэ хуудсыг өөрөө бөглөж, эцэг эх, багш эсвэл мэргэжлийн зөвлөхтэй ярилцахдаа ашиглаарай.")}
@@ -470,7 +550,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     </div>
     <div class="disclaimer"><b>Санамж</b><p>Энэ тайлан нь өөрийгөө танин мэдэх, мэргэжлийн боломжоо судлахад туслах мэдээлэл юм. Тестийн үр дүн нь мэргэжил сонголтын эцсийн шийдвэр, сэтгэл зүйн онош, амжилтын баталгаа биш. Сонголтоо бодит туршлага, сургалтын шаардлага, өөрийн үнэт зүйл болон зөвлөгөөтэй хамтатган гаргаарай.</p></div>
     <div class="source-note"><b>Агуулгын эх сурвалж</b><p>“Мэргэжил сонголтын Дж. Холландын арга” (9–12 анги) аргачлалын RIASEC тайлбар, Алхам 4–5; “Holland test- асуумж” эх асуумж. Мэргэжлийн жишээг аргачлалын Алхам 5-ын жагсаалтаас сонгов. Элсэлтийн хөтөлбөрийн жишээг 2026–2027 оны сургуулиудын албан ёсны мэдээлэлтэй тулгасан; элсэх жилийн журамтай дахин нягтална.</p></div>
-    ${footer(12, code)}`;
+    ${footer(13, code)}`;
 
   const style = `
   @page{size:A4;margin:0}
@@ -748,6 +828,28 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   .labour-context p{font-size:5.8pt;line-height:1.3;color:#697971;margin:1mm 0 0}
   .labour-sources{margin-top:1mm;padding-top:1mm}
   .labour-sources p{font-size:5.1pt;line-height:1.25}
+  .labour-chart{display:grid;grid-template-columns:1fr 1fr;gap:3mm;padding:2.5mm 3.5mm;border:1px solid #e1e9e4;border-radius:3mm;margin:2.5mm 0}
+  .labour-chart h4{font-size:6.5pt;color:#36584f;margin:0 0 1.3mm}
+  .labour-bar-row{display:grid;grid-template-columns:36mm 1fr 9mm;align-items:center;gap:1.2mm;margin:.8mm 0}
+  .labour-bar-row>span{font-size:5.2pt;line-height:1.12;color:#64736c}
+  .labour-bar-row>b{font-size:5.7pt;text-align:right;color:#38594f}
+  .labour-bar-track{height:2.2mm;background:#edf1ec;border-radius:2mm;overflow:hidden}
+  .labour-bar-track i{display:block;height:100%;border-radius:2mm}
+  .growth-bar{background:#5d9b77}
+  .decline-bar{background:#d18a56}
+  .labour-chart>p{grid-column:1/-1;margin:.5mm 0 0;font-size:5pt;line-height:1.2;color:#89958e}
+  .rank-columns{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin:2mm 0}
+  .rank-row{display:grid;grid-template-columns:6mm 1fr 19mm;gap:1.2mm;align-items:center;padding:1.1mm 0;border-bottom:1px solid #edf0eb}
+  .rank-row>b{display:grid;place-items:center;width:5.5mm;height:5.5mm;border-radius:50%;background:#edf4ee;color:#327c79;font-size:6pt}
+  .rank-row>span{font-size:6pt;line-height:1.15;color:#435b51}
+  .rank-row>small{font-size:5.2pt;text-align:right;color:#89958e}
+  .ranking-explainer{background:#f1f6f1;border-left:1.5mm solid #327c79;border-radius:3mm;padding:3mm 4mm;margin-bottom:2.5mm}
+  .ranking-explainer>b{font-size:7.6pt}
+  .ranking-explainer p{font-size:6.1pt;line-height:1.3;color:#66766e;margin:1mm 0 0}
+  .ranking-source p{font-size:5.5pt;line-height:1.25;color:#78857d;margin:1mm 0 0}
+  .admission-a34{background:#f4f7f1;border:1px solid #dfe9e1;border-radius:3mm;padding:2.5mm 3.5mm;margin:2mm 0}
+  .admission-a34>b{font-size:7pt;color:#327c79}
+  .admission-a34 p{font-size:6pt;line-height:1.3;color:#66766e;margin:1mm 0 0}
   .admission-intro{background:#eef5ef;border-radius:3mm;padding:3mm 4mm;margin-bottom:3mm}
   .admission-intro b{font-size:8pt}
   .admission-intro p{font-size:6.8pt;color:#687970;margin:1mm 0 0}
@@ -773,8 +875,9 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     page(personalized, 8, code),
     page(careers, 9, code),
     page(laborTrends, 10, code),
-    page(admissions, 11, code),
-    page(worksheet, 12, code)
+    page(universityRankings, 11, code),
+    page(admissions, 12, code),
+    page(worksheet, 13, code)
   ];
   return `<!doctype html><html lang="mn"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Мэргэжлийн чиг баримжааны тайлан — ${name}</title><style>${style}</style></head><body>${pages.join("")}</body></html>`;
 }
