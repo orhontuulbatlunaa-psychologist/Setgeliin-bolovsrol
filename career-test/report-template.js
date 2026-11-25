@@ -406,18 +406,54 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     </ol></div>
     ${footer(8, code)}`;
 
-  const admissions = `
-    ${pageHeader("ЭЛСЭЛТ БА СУРАЛЦАХ ТӨЛӨВЛӨГӨӨ", "Мэргэжил бүрийн сургалтын замыг нягтлаарай", "Их, дээд сургууль, хөтөлбөр, элсэлтийн шалгалт болон тухайн жилийн босго оноо өөрчлөгдөж болох тул сонголт хийх үед албан ёсны мэдээллийг заавал шалгана.")}
-    <div class="admissions-ref"><small>ТУЛГУУР БАРИМТ</small><h3>Боловсролын сайдын 2026 оны 02 дугаар сарын 06-ны өдрийн А/34 тушаал</h3><p>“Босго оноо тогтоох тухай” тушаалын 2026–2027 оны элсэлтийн мэдээллийг ашиглахаар төлөвлөсөн.</p></div>
-    <div class="admissions-warning"><b>Чухал тэмдэглэл</b><p>Сургуулийн нэр, хөтөлбөрийн код, элсэлтийн шалгалтын хичээл, босго онооны хавсралтын хүснэгтийг бүрэн бүтэцжүүлж, эх баримттай мөр мөрөөр нь баталгаажуулах ажил дуусаагүй байна. Иймээс энэхүү тайланд баталгаажаагүй сургууль, онооны жагсаалтыг таамгаар оруулаагүй.</p></div>
-    <div class="checklist"><b>Сургууль, хөтөлбөр сонгохын өмнө шалгах нь</b>
-      <div><span>01</span><p>Сургуулийн албан ёсны элсэлтийн журам, тухайн хичээлийн жилийн мэдээлэл.</p></div>
-      <div><span>02</span><p>Сонгосон хөтөлбөрийн элсэлтийн шалгалтын хичээл, босго оноо.</p></div>
-      <div><span>03</span><p>Хөтөлбөрийн магадлан итгэмжлэл, сургалтын төлөвлөгөө, дадлагын боломж.</p></div>
-      <div><span>04</span><p>Сургалтын төлбөр, тэтгэлэг, дотуур байр, байршил болон төгсөгчдийн ажлын боломж.</p></div>
+  const laborTrends = `
+    ${pageHeader("ХӨДӨЛМӨРИЙН ЗАХ ЗЭЭЛИЙН СУДАЛГАА", "Ажил хөдөлмөр эрхлэлтийн ирээдүйн чиг хандлага", "Технологийн хөгжил, хүн ам зүйн өөрчлөлт, эдийн засгийн шинэ бүтэц, ногоон шилжилт нь мэргэжлийн эрэлт болон ажил үүргийн агуулгыг өөрчилж байна.")}
+    <div class="labour-lead"><b>Ирээдүйн мэргэжлийг зөвхөн нэрээр нь бус, тухайн ажилд шаардагдах ур чадвар, өдөр тутмын үүргийн өөрчлөлттэй нь хамт судлах шаардлагатай.</b><p>Хөдөлмөрийн зах зээлийн прогноз нь тодорхой хугацаа, судалгаанд хамрагдсан ажил олгогчдын хүлээлтэд тулгуурладаг. Иймээс доорх тоон мэдээллийг баталгаатай ирээдүй гэж бус, одоогийн чиг хандлагын баримжаа гэж ойлгоно.</p></div>
+    <div class="labour-stats">
+      <div><small>МОНГОЛ УЛС · 2026 ОНЫ ТӨЛӨВ</small><b>82.6 мянга</b><span>Ажилтан авах хэрэгцээтэй ажлын байрны тооцоолол</span></div>
+      <div><small>ДЭЛХИЙ · 2030 ОН ХҮРТЭЛ</small><b>+78 сая</b><span>170 сая шинээр бий болох, 92 сая шахагдах ажлын байрны цэвэр өсөлтийн төсөөлөл</span></div>
+      <div><small>ХИЙМЭЛ ОЮУН УХААН</small><b>1/4</b><span>Дэлхийн ажиллагчдын генератив хиймэл оюуны нөлөөлөлд ямар нэг хэмжээгээр өртөж болох хувь</span></div>
     </div>
-    <div class="admissions-next"><b>Төлөвлөлтийн зөвлөмж</b><p>Зонхилох болон дагалдах хэв шинжид нийцэх 3–5 мэргэжлийг жагсааж, тус бүрийн сургалтын зам, хичээлийн шаардлага, ажлын орчныг харьцуулан судлаарай.</p></div>
-    ${footer(9, code)}`;
+    <div class="labour-columns">
+      <div class="labour-panel growing"><h3>Эрэлт нь өсөх төлөвтэй салбар, мэргэжлүүд</h3><p class="panel-intro">Дэлхийн ажил олгогчдын 2025–2030 оны төсөөлөл болон технологи, хүн ам, эрчим хүчний шилжилтийн чиглэлд тулгуурласан жишээ.</p><ul>
+        <li><b>Мэдээллийн технологи, өгөгдөл, хиймэл оюун:</b> хиймэл оюун ба машин сургалтын мэргэжилтэн, их өгөгдлийн шинжээч, програм хангамж хөгжүүлэгч, кибер аюулгүй байдлын мэргэжилтэн, өгөгдлийн сангийн инженер.</li>
+        <li><b>Эрчим хүч, байгаль орчин, инженерчлэл:</b> сэргээгдэх эрчим хүчний инженер, байгаль орчны инженер, цахилгаан эрчим хүчний системийн мэргэжилтэн, автоматжуулалт ба роботын инженер, цахилгаан болон автомашины шинэ технологийн мэргэжилтэн.</li>
+        <li><b>Эрүүл мэнд, боловсрол, нийгмийн үйлчилгээ:</b> сувилагч, асаргаа сувилгааны мэргэжилтэн, нөхөн сэргээх үйлчилгээний ажилтан, багш, нийгмийн ажилтан, сэтгэл зүйн зөвлөх.</li>
+        <li><b>Дэд бүтэц, үйлдвэрлэл, логистик:</b> барилгын инженер, техникч, засвар үйлчилгээний мэргэжилтэн, нийлүүлэлтийн сүлжээ ба логистикийн шинжээч, үйлдвэрлэлийн автоматжуулалтын техникч.</li>
+        <li><b>Хөдөө аж ахуй, хүнсний үйлдвэрлэл:</b> агротехнологич, хүнсний технологич, мал эмнэлгийн мэргэжилтэн, хүнсний аюулгүй байдал ба чанарын хяналтын мэргэжилтэн.</li>
+      </ul></div>
+      <div class="labour-panel exposed"><h3>Эрэлт буурах, автоматжуулалтад өртөх эрсдэлтэй ажил</h3><p class="panel-intro">Олон улсын прогнозод дараах ажил, үүргийн эрэлт буурах хүлээлт өндөр гарсан.</p><ul>
+        <li>Касс, тасалбар борлуулалтын ажилтан.</li>
+        <li>Захиргааны туслах, нарийн бичгийн даргын хэвшмэл ажил үүрэг.</li>
+        <li>Хэвлэлийн үйлдвэрлэлийн зарим давтагддаг ажил.</li>
+        <li>Нягтлан бодох бүртгэл, аудитын стандартчилсан, давтагддаг даалгаврын хэсэг.</li>
+        <li>Мэдээлэл шивэх, бүртгэл шинэчлэх, баримт боловсруулах зэрэг дүрэмчилж болох ажлууд.</li>
+      </ul><div class="automation-caveat"><b>Чухал ялгаа:</b> Эдгээр мэргэжил бүрэн устах нь баталгаатай гэсэн үг биш. Харин автоматжуулалт, хиймэл оюун ухааны нөлөөгөөр зарим ажлын байр, давтагддаг даалгаврын хэрэгцээ буурч, үлдэх ажил нь илүү нарийн ур чадвар шаардаж болзошгүй.</div></div>
+    </div>
+    <div class="skill-band"><b>Өөрчлөгдөж буй зах зээлд хэрэгтэй ур чадвар</b><span>Дижитал болон хиймэл оюуны бичиг үсэг · өгөгдөлд суурилсан сэтгэлгээ · шүүмжлэлт сэтгэлгээ · асуудал шийдвэрлэх · бүтээлч байдал · харилцаа, хамтын ажиллагаа · дасан зохицох чадвар · тасралтгүй суралцах дадал.</span></div>
+    <div class="labour-context"><b>Монгол Улсын нөхцөл байдлын баримжаа</b><p>Гэр бүл, хөдөлмөр, нийгмийн хамгааллын яамны 2026 оны Хөдөлмөрийн зах зээлийн эрэлтийн барометрийн мэдээллээр тухайн жилд 82.6 мянган ажлын байранд ажилтан авах хэрэгцээ тооцоолсон. Үүний 90.7 хувь буюу 74.9 мянга нь байнгын ажлын байр; 53.2 хувь нь шинэ ажлын байр, 46.8 хувь нь сул ажлын байрыг нөхөх хэрэгцээ гэж тайлагнажээ. Энэ бол 2026 оны жилийн эрэлтийн тооцоо бөгөөд 2030 он хүртэлх мэргэжил тус бүрийн прогноз биш.</p></div>
+    <div class="source-note labour-sources"><b>Судалгааны эх сурвалж</b><p>Гэр бүл, хөдөлмөр, нийгмийн хамгааллын яам, “2026 онд 82.6 мянган ажлын байранд ажилтан авах хэрэгцээ бий болно” (2026.06.04), mlsp.gov.mn/content/detail/4102; World Economic Forum, <i>The Future of Jobs Report 2025</i>, weforum.org/publications/the-future-of-jobs-report-2025/2-jobs-outlook; International Labour Organization, <i>Generative AI and Jobs: A Refined Global Index of Occupational Exposure</i> (2025.05.20), ilo.org/publications/generative-ai-and-jobs-refined-global-index-occupational-exposure. Олон улсын прогноз нь Монголын бүх салбарт ижил хэмжээгээр хэрэгжинэ гэсэн үг биш.</p></div>
+    ${footer(10, code)}`;
+
+  const admissions = `
+    ${pageHeader("ИХ, ДЭЭД СУРГУУЛИЙН МЭДЭЭЛЭЛ", "Суралцах чиглэл ба элсэлтийн шаардлага", "Сургуулийн ерөнхий нэр хүндээс гадна сонгосон хөтөлбөрийн агуулга, элсэлтийн хичээл, босго оноо, нэмэлт шалгуур болон ажлын боломжийг хамтад нь харьцуулаарай.")}
+    <div class="admission-intro"><b>Доорх жишээнүүд нь 2026–2027 оны хичээлийн жилийн албан ёсны элсэлтийн мэдээлэлд тулгуурлав.</b><p>Элсэлтийн хичээл, босго оноо жил бүр шинэчлэгдэж болох тул бүртгүүлэхээсээ өмнө тухайн хөтөлбөрийн хамгийн сүүлийн журамтай дахин тулгана.</p></div>
+    <div class="university-grid">
+      <article class="university-card"><h3>Монгол Улсын Их Сургууль · МУИС</h3><p><b>Судлах боломжтой чиглэл:</b> байгалийн ухаан, математик, мэдээллийн технологи, нийгэм-хүмүүнлэг, эрх зүй, бизнес, олон улсын харилцаа зэрэг олон салбарын бакалаврын хөтөлбөр.</p><p><b>Элсэлтийн нөхцөл:</b> 2026–2027 оны бакалаврын өдрийн элсэлтийн журам нийтлэгдсэн. Суурь болон дагалдах шалгалтын хослол, босго оноо нь сонгосон хөтөлбөрөөс хамаарч өөр байна; хөтөлбөрийн мэдээллийг элсэлтийн системээс тус бүр шалгана.</p><small>Албан ёсны эх сурвалж: elselt.num.edu.mn · burtgel.num.edu.mn</small></article>
+      <article class="university-card"><h3>Шинжлэх Ухаан, Технологийн Их Сургууль · ШУТИС</h3><p><b>Судлах чиглэл:</b> инженерчлэл, технологи, хэрэглээний математик, статистик, үйлдвэрлэл, эрчим хүч, байгаль орчны инженерчлэл.</p><p><b>2026–2027 оны жишээ · Статистик:</b> суурь хичээл Математик эсвэл Физик — 490; дагалдах хичээл Нийгэм судлал эсвэл Англи хэл — 450. Сургалтын хугацаа 4 жил.</p><small>Албан ёсны эх сурвалж: sas.must.edu.mn/en/page/1093 · elselt.edu.mn</small></article>
+      <article class="university-card"><h3>Анагаахын Шинжлэх Ухааны Үндэсний Их Сургууль · АШУҮИС</h3><p><b>Судлах чиглэл:</b> хүний их эмч, уламжлалт анагаах ухаан, сувилахуй, эм зүй, нийгмийн эрүүл мэнд болон эрүүл мэндийн тусламж үйлчилгээ.</p><p><b>2026–2027 оны жишээ · Хүний их эмч:</b> ЭЕШ-1 Хими эсвэл Математик — 490; ЭЕШ-2 Биологи эсвэл Физик — 490. <b>Уламжлалт анагаахын их эмч:</b> эхний бүлэг 440, хоёр дахь бүлэг 490.</p><small>Албан ёсны эх сурвалж: mnums.edu.mn/admission/requirements · admission.mnums.edu.mn</small></article>
+      <article class="university-card"><h3>Дотоод хэргийн их сургууль · ДХИС</h3><p><b>Судлах чиглэл:</b> хууль сахиулах, цагдаа, хил хамгаалалт, онцгой байдал, шүүхийн шийдвэр гүйцэтгэл, шинжлэн магадлах ухаан, сэтгэл судлал, нийгмийн ажил.</p><p><b>2026–2027 оны жишээ:</b> Сэтгэл судлал — Нийгэм судлал/Математик 490; Монгол хэл/Англи хэл 490. Нийгмийн ажил — Нийгэм судлал/Англи хэл 490; Монгол хэл/Математик 500. Төрийн тусгай албаны зарим хөтөлбөрт ур чадвар, бие бялдрын нэмэлт шалгалт шаардана.</p><small>Албан ёсны эх сурвалж: uia.gov.mn · elselt.uia.gov.mn · элсэлтийн журам (2026.03.30, №117)</small></article>
+    </div>
+    <div class="admission-check"><b>Хөтөлбөрөө сонгохын өмнө дараах мэдээллийг заавал нягтлаарай</b><ol>
+      <li>Хөтөлбөрийн нэр, индекс, суралцах хугацаа, сургалтын агуулга.</li>
+      <li>Суурь болон дагалдах ЭЕШ-ын хичээл, хичээл тус бүрийн босго оноо.</li>
+      <li>Ур чадвар, бие бялдар, ярилцлага болон бусад тусгай шалгалт байгаа эсэх.</li>
+      <li>Магадлан итгэмжлэл, дадлага хийх боломж, сургалтын орчин.</li>
+      <li>Сургалтын төлбөр, тэтгэлэг, байршил, дотуур байр, төгсөгчдийн ажил эрхлэлтийн мэдээлэл.</li>
+    </ol></div>
+    <div class="admission-warning"><b>Босго оноо нь элсэх баталгаа биш</b><p>Босго оноо нь тухайн хөтөлбөрт өрсөлдөх доод шаардлагыг илэрхийлнэ. Элсэгчдийн онооны эрэмбэ, батлагдсан хяналтын тоо, нэмэлт шалгуур болон сургуулийн дотоод журмаар эцсийн шалгаруулалт хийгддэг.</p></div>
+    <div class="admission-sources"><b>Эх сурвалжийн тэмдэглэл</b><p>МУИС-ийн 2026–2027 оны элсэлтийн журам: elselt.num.edu.mn; ШУТИС-ийн хөтөлбөр, суурь болон дагалдах хичээлийн жагсаалт: sas.must.edu.mn/en/page/1093; АШУҮИС-ийн 2026–2027 оны босго оноо, шалгалтын шаардлага: mnums.edu.mn/admission/requirements; ДХИС-ийн захирлын 2026.03.30-ны №117 тушаалын хавсралт: sis.uia.gov.mn/files/admission/2026-2027_оны_хичээлийн_жилийн_4_жил_иргэн.pdf. Энэ бол сонгосон хөтөлбөрүүдийн жишээ мэдээлэл бөгөөд бүх сургуулийн бүрэн жагсаалт биш.</p></div>
+    ${footer(11, code)}`;
 
   const worksheet = `
     ${pageHeader("ТАНЫ ДАРААГИЙН АЛХАМ", "Мэргэжлээ судлах миний ажлын хуудас", "Энэ хуудсыг өөрөө бөглөж, эцэг эх, багш эсвэл мэргэжлийн зөвлөхтэй ярилцахдаа ашиглаарай.")}
@@ -431,9 +467,8 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
       <div><b>Надад хөгжүүлэх шаардлагатай чадвар</b><i></i><i></i><i></i></div>
       <div><b>Судлах шаардлагатай хичээл, элсэлтийн нөхцөл</b><i></i><i></i><i></i></div>
     </div>
-    <div class="worksheet-prompt"><b>Би дараагийн 7 хоногт хийх нэг бодит алхам</b><i></i><i></i></div>
     <div class="disclaimer"><b>Санамж</b><p>Энэ тайлан нь өөрийгөө танин мэдэх, мэргэжлийн боломжоо судлахад туслах мэдээлэл юм. Тестийн үр дүн нь мэргэжил сонголтын эцсийн шийдвэр, сэтгэл зүйн онош, амжилтын баталгаа биш. Сонголтоо бодит туршлага, сургалтын шаардлага, өөрийн үнэт зүйл болон зөвлөгөөтэй хамтатган гаргаарай.</p></div>
-    <div class="source-note"><b>Агуулгын эх сурвалж</b><p>“Мэргэжил сонголтын Дж. Холландын арга” (9–12 анги) аргачлалын RIASEC тайлбар, Алхам 4–5; “Holland test- асуумж” эх асуумж. Мэргэжлийн жишээг аргачлалын Алхам 5-ын жагсаалтаас сонгов. Элсэлтийн босго онооны дэлгэрэнгүй хавсралтын нэг бүрчилсэн тулгалт хийгдээгүй тул сургууль, хөтөлбөрийн оноо оруулаагүй.</p></div>
+    <div class="source-note"><b>Агуулгын эх сурвалж</b><p>“Мэргэжил сонголтын Дж. Холландын арга” (9–12 анги) аргачлалын RIASEC тайлбар, Алхам 4–5; “Holland test- асуумж” эх асуумж. Мэргэжлийн жишээг аргачлалын Алхам 5-ын жагсаалтаас сонгов. Элсэлтийн хөтөлбөрийн жишээг 2026–2027 оны сургуулиудын албан ёсны мэдээлэлтэй тулгасан; элсэх жилийн журамтай дахин нягтална.</p></div>
     ${footer(10, code)}`;
 
   const style = `
@@ -628,6 +663,100 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   .disclaimer b,.source-note b{font-size:7.5pt}
   .disclaimer p,.source-note p{font-size:6.5pt;line-height:1.45;color:#727f77;margin:1mm 0 0}
   .source-note{margin-top:3mm;padding:2.5mm 0}
+  .cover-contact{display:flex;gap:8mm;flex-wrap:wrap;margin-top:2mm;color:#52736c;font-size:7pt;letter-spacing:.04em}
+  .ranked-type{display:flex;gap:1.6mm;align-items:baseline;font-size:7pt;line-height:1.35;margin:.7mm 0;color:#4f665e}
+  .ranked-type b{min-width:5mm;color:#d18a56;font-size:6.5pt}
+  .summary-ranks{margin:1.5mm 0;min-height:15mm}
+  .english-type{display:block;font-size:6.7pt;color:#327c79;margin:-.5mm 0 1mm;letter-spacing:.02em}
+  .riasec-legend{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2mm 2mm;margin:1mm 0 2mm}
+  .riasec-legend span{display:flex;align-items:center;gap:1.5mm;font-size:5.8pt;color:#586c63}
+  .riasec-legend b{display:inline-grid;place-items:center;width:5mm;height:5mm;border-radius:50%;background:var(--type);color:#fff;font-size:6pt;flex:none}
+  .profile-radar{margin:2mm 0}
+  .mini-chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin:1mm 0 3mm}
+  .mini-chart-card{border:1px solid #e1eae4;border-radius:3mm;padding:1.5mm;text-align:center;min-width:0}
+  .mini-chart-card>b{display:block;font-size:5.8pt;letter-spacing:.04em;color:#6e8178;min-height:6mm}
+  .mini-chart-card .radar{width:53mm;height:39mm;margin:0 auto}
+  .mini-chart-card>small{display:block;font-size:5.8pt;line-height:1.22;color:#327c79;min-height:6mm;margin-top:-1mm}
+  .overlap-panel{height:77mm;background:#f5f8f4;border:1px solid #e1eae4;border-radius:4mm;padding:2.5mm 4mm;margin-bottom:2mm}
+  .overlap-chart{display:block;width:145mm;height:67mm;margin:0 auto}
+  .riasec-spectrum-wrap{margin:1.5mm 0 2mm}
+  .spectrum-heading{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:1mm}
+  .spectrum-heading b{font-size:7.5pt;color:#24443f}
+  .spectrum-heading small{font-size:5.6pt;color:#87958e}
+  .riasec-spectrum{display:grid;grid-template-columns:repeat(6,1fr);gap:1.3mm}
+  .riasec-spectrum>div{min-width:0;text-align:center;border-radius:2mm;padding:1.4mm .5mm;background:#f3f6f2;border-top:1.7mm solid var(--type)}
+  .riasec-spectrum b,.riasec-spectrum strong,.riasec-spectrum span{display:block}
+  .riasec-spectrum b{font-family:Georgia,serif;font-size:10pt;color:var(--type)}
+  .riasec-spectrum strong{font-size:5.5pt;color:#49645a}
+  .riasec-spectrum span{font-size:5.1pt;line-height:1.15;color:#829087;margin-top:.5mm}
+  .integrated-conclusion{display:grid;grid-template-columns:1fr 1fr;gap:2mm;margin:1.5mm 0}
+  .integrated-conclusion>div{background:#21423e;color:#fffefa;border-radius:2.5mm;padding:2mm 3mm}
+  .integrated-conclusion small,.integrated-conclusion b{display:block}
+  .integrated-conclusion small{font-size:5.6pt;letter-spacing:.08em;opacity:.8}
+  .integrated-conclusion b{font-size:7.6pt;margin-top:.5mm}
+  .personal-summary{background:#f1f6f1;border-left:1.5mm solid #327c79;border-radius:3mm;padding:4mm 5mm;margin-bottom:3mm}
+  .personal-summary>b{font-size:8.5pt}
+  .personal-summary p{font-size:7.2pt;line-height:1.42;color:#62736b;margin:1.5mm 0 0}
+  .personal-triad{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin:3mm 0}
+  .personal-triad>div{border:1px solid #e1eae4;border-radius:3mm;padding:3mm}
+  .personal-triad small,.personal-triad b{display:block}
+  .personal-triad small{font-size:5.8pt;letter-spacing:.07em;color:#83918a}
+  .personal-triad b{font-size:7.2pt;color:#327c79;margin:1mm 0}
+  .personal-triad p{font-size:6.1pt;line-height:1.32;color:#6b7a72;margin:0}
+  .personal-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:2mm}
+  .personal-type{border:1px solid #e1e9e4;border-top:1.5mm solid var(--type);border-radius:2.5mm;padding:2.7mm;break-inside:avoid}
+  .personal-type-head{display:flex;align-items:center;gap:2mm;margin-bottom:1mm}
+  .personal-type-head .type-code{width:6mm;height:6mm;font-size:6.5pt}
+  .personal-type-head small,.personal-type-head b{display:block}
+  .personal-type-head small{font-size:5.3pt;color:#829188;letter-spacing:.06em}
+  .personal-type-head b{font-size:8pt;color:#24443f}
+  .personal-type>p{font-size:6.3pt;line-height:1.3;color:#687970;margin:0 0 1.4mm}
+  .personal-type>div:not(.personal-type-head){margin-top:1mm}
+  .personal-type>div>small{display:block;font-size:5.3pt;color:#89958e;letter-spacing:.06em}
+  .personal-type>div>span{display:block;font-size:6pt;line-height:1.3;color:#50665d}
+  .personal-caution{margin-top:3mm;background:#fff5eb;border-left:1.5mm solid #d18a56;border-radius:2mm;padding:3mm 4mm}
+  .personal-caution b{font-size:7.5pt}
+  .personal-caution p{font-size:6.4pt;line-height:1.35;color:#6d7169;margin:1mm 0 0}
+  .labour-lead{border-left:1.5mm solid #327c79;background:#f1f6f1;border-radius:2.5mm;padding:3.5mm 4mm;margin-bottom:3mm}
+  .labour-lead b{font-size:8.5pt;color:#284b44}
+  .labour-lead p{font-size:6.8pt;color:#64756d;margin:1mm 0 0;line-height:1.4}
+  .labour-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin:3mm 0}
+  .labour-stats>div{border-radius:3mm;padding:3mm;background:#f2f6f2}
+  .labour-stats small,.labour-stats b,.labour-stats span{display:block}
+  .labour-stats small{font-size:5.5pt;letter-spacing:.07em;color:#7d8d85}
+  .labour-stats b{font-family:Georgia,serif;font-size:16pt;color:#327c79;margin:1mm 0}
+  .labour-stats span{font-size:5.8pt;line-height:1.25;color:#66766e}
+  .labour-columns{display:grid;grid-template-columns:1.08fr .92fr;gap:2.5mm}
+  .labour-panel{border:1px solid #e1e9e4;border-radius:3mm;padding:3mm}
+  .labour-panel h3{font-family:Georgia,serif;font-size:11.5pt;font-weight:500;color:#24443f;margin:0 0 1.2mm}
+  .panel-intro{font-size:6.2pt;line-height:1.3;color:#6b7a72;margin:0 0 1.5mm}
+  .labour-panel ul{margin:0;padding-left:3.8mm}
+  .labour-panel li{font-size:5.8pt;line-height:1.3;color:#5b6c63;margin-bottom:1.25mm}
+  .labour-panel li b{color:#38584e}
+  .exposed{background:#fffaf4}
+  .automation-caveat{margin-top:1.5mm;border-top:1px solid #f0e6d8;padding-top:1.5mm;font-size:5.7pt;line-height:1.3;color:#805f4c}
+  .skill-band{background:#21423e;color:#fffefa;border-radius:3mm;padding:3mm 4mm;margin:2.5mm 0}
+  .skill-band b,.skill-band span{display:block}
+  .skill-band b{font-size:7.2pt}
+  .skill-band span{font-size:5.8pt;line-height:1.3;color:#deebe3;margin-top:1mm}
+  .labour-context{border:1px solid #e1e9e4;border-radius:3mm;padding:2.5mm 3.5mm;margin:2.5mm 0}
+  .labour-context b{font-size:6.8pt}
+  .labour-context p{font-size:5.8pt;line-height:1.3;color:#697971;margin:1mm 0 0}
+  .labour-sources{margin-top:1mm;padding-top:1mm}
+  .labour-sources p{font-size:5.1pt;line-height:1.25}
+  .admission-intro{background:#eef5ef;border-radius:3mm;padding:3mm 4mm;margin-bottom:3mm}
+  .admission-intro b{font-size:8pt}
+  .admission-intro p{font-size:6.8pt;color:#687970;margin:1mm 0 0}
+  .university-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm}
+  .university-card{border:1px solid #e1e9e4;border-top:1.5mm solid #5d9b77;border-radius:2.5mm;padding:3mm;break-inside:avoid}
+  .university-card h3{font-family:Georgia,serif;font-size:10pt;font-weight:500;color:#24443f;margin:0 0 1.5mm}
+  .university-card p{font-size:6.3pt;line-height:1.32;color:#607168;margin:1mm 0}
+  .university-card small{font-size:5.6pt;color:#327c79}
+  .admission-check{border:1px solid #e1e9e4;border-radius:3mm;padding:3mm 4mm;margin:3mm 0}
+  .admission-check b{font-size:7.8pt}
+  .admission-check ol{margin:1mm 0 0;padding-left:5mm;columns:2;column-gap:7mm}
+  .admission-check li{font-size:6.1pt;color:#63746b;margin-bottom:1mm;break-inside:avoid}
+  .admission-sources p{font-size:5.3pt;line-height:1.25}
   `;
   const pages = [
     page(cover, 1, code, "cover"),
@@ -637,9 +766,11 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     page(ability, 5, code),
     page(profile, 6, code),
     page(integrated, 7, code),
-    page(careers, 8, code),
-    page(admissions, 9, code),
-    page(worksheet, 10, code)
+    page(personalized, 8, code),
+    page(careers, 9, code),
+    page(laborTrends, 10, code),
+    page(admissions, 11, code),
+    page(worksheet, 12, code)
   ];
   return `<!doctype html><html lang="mn"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Мэргэжлийн чиг баримжааны тайлан — ${name}</title><style>${style}</style></head><body>${pages.join("")}</body></html>`;
 }
