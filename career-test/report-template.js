@@ -50,6 +50,23 @@ const TYPE_COPY = {
 };
 
 const getType = (code) => RI.find((type) => type.code === code);
+const ENGLISH_TYPE = {
+  R: { name: "Realistic", pronunciation: "риалистик" },
+  I: { name: "Investigative", pronunciation: "инвестигейтив" },
+  A: { name: "Artistic", pronunciation: "артистик" },
+  S: { name: "Social", pronunciation: "соу-шэл" },
+  E: { name: "Enterprising", pronunciation: "энтэрпрайзинг" },
+  C: { name: "Conventional", pronunciation: "кэнвэншэнэл" }
+};
+const TYPE_SECTORS = {
+  R: "инженерчлэл, үйлдвэрлэл, барилга, эрчим хүч, техник үйлчилгээ, хөдөө аж ахуйн технологи",
+  I: "шинжлэх ухаан, мэдээллийн технологи, өгөгдөл, судалгаа, эрүүл мэндийн оношилгоо",
+  A: "дизайн, архитектур, медиа, контент үйлдвэрлэл, урлаг, бүтээлч үйлдвэрлэл",
+  S: "боловсрол, эрүүл мэнд, сэтгэл зүйн үйлчилгээ, нийгмийн хамгаалал, хүний хөгжил",
+  E: "бизнес, маркетинг, менежмент, төсөл, худалдаа, үйлчилгээ, бизнес эрхлэлт",
+  C: "санхүү, нягтлан бодох бүртгэл, аудит, даатгал, өгөгдөл ба баримт бичгийн удирдлага, чанарын хяналт"
+};
+
 const formatDate = (value) => {
   const date = value ? new Date(value) : new Date();
   return new Intl.DateTimeFormat("mn-MN", { year: "numeric", month: "long", day: "numeric" }).format(date);
@@ -168,6 +185,46 @@ function scoreRows(scores, sectionKey) {
       <div class="score-value">${item.score}<small>/ ${item.max}</small></div>
       <div class="score-rank">${rank <= 3 ? (rank === 1 ? "I" : rank === 2 ? "II" : "III") : ""}</div>
     </div>`;
+  }).join("");
+}
+
+function rankedTypeRows(codes, scores) {
+  const distinct = [...new Set([...scores].sort((a, b) => b.score - a.score).map((item) => item.score))];
+  return (codes || []).map((code) => {
+    const item = scores.find((score) => score.code === code);
+    const rank = item ? distinct.indexOf(item.score) + 1 : 0;
+    const roman = rank === 1 ? "I" : rank === 2 ? "II" : rank === 3 ? "III" : String(rank);
+    return '<div class="ranked-type"><b>' + roman + '</b><span>' + esc(TYPE_COPY[code]?.title || code) + '</span></div>';
+  }).join("");
+}
+
+function overlapRadarSvg(comparison) {
+  const center = { x: 300, y: 170 }, radius = 116;
+  const angle = (index) => (-90 + index * 60) * Math.PI / 180;
+  const point = (index, fraction) => ({ x: center.x + Math.cos(angle(index)) * radius * fraction, y: center.y + Math.sin(angle(index)) * radius * fraction });
+  const rings = [1 / 3, 2 / 3, 1].map((fraction) => '<polygon points="' + RI.map((_, index) => { const p = point(index, fraction); return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(" ") + '" fill="none" stroke="#dce7e3" stroke-width="1.2"/>').join("");
+  const axes = RI.map((_, index) => { const p = point(index, 1); return '<line x1="' + center.x + '" y1="' + center.y + '" x2="' + p.x.toFixed(1) + '" y2="' + p.y.toFixed(1) + '" stroke="#e0e9e5"/>'; }).join("");
+  const values = RI.map((type) => Math.max(0, Math.min(3, Number(comparison.find((item) => item.code === type.code)?.appearances || 0))) / 3);
+  const polygon = values.map((fraction, index) => { const p = point(index, fraction); return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(" ");
+  const markers = RI.map((type, index) => { const p = point(index, values[index]); const item = comparison.find((score) => score.code === type.code); return '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="6" fill="' + type.color + '" stroke="#fff" stroke-width="1.5"><title>' + esc(type.code + " · " + (item?.appearances || 0) + "/3") + '</title></circle>'; }).join("");
+  const labels = RI.map((type, index) => { const p = point(index, 1.22); const anchor = p.x < center.x - 10 ? "end" : (p.x > center.x + 10 ? "start" : "middle"); return '<text x="' + p.x.toFixed(1) + '" y="' + (p.y + 4).toFixed(1) + '" text-anchor="' + anchor + '" font-size="13" font-weight="800" fill="' + type.color + '">' + type.code + '</text>'; }).join("");
+  const counts = RI.map((type, index) => { const p = point(index, values[index]); const item = comparison.find((score) => score.code === type.code); return '<text x="' + (p.x + 9).toFixed(1) + '" y="' + (p.y - 8).toFixed(1) + '" font-size="10" font-weight="700" fill="#52665f">' + (item?.appearances || 0) + '</text>'; }).join("");
+  return '<svg viewBox="0 0 600 340" class="overlap-chart" role="img" aria-label="Гурван тестийн эхний гурван хэв шинжийн давхцлын давтамжийн график">' + rings + axes + '<polygon points="' + polygon + '" fill="#5d9b77" fill-opacity=".18" stroke="#327c79" stroke-width="3" stroke-linejoin="round"/>' + markers + counts + labels + '<circle cx="300" cy="170" r="2.5" fill="#647a74"/><text x="300" y="326" text-anchor="middle" font-size="10" fill="#829188">Давтамж: тест тус бүрийн эхний 3-т орсон тоо (0–3)</text></svg>';
+}
+
+function riasecSpectrum() {
+  return '<div class="riasec-spectrum">' + RI.map((type) => {
+    const english = ENGLISH_TYPE[type.code];
+    return '<div style="--type:' + type.color + '"><b>' + type.code + '</b><strong>' + english.name + '</strong><span>' + esc(TYPE_COPY[type.code].title) + '</span></div>';
+  }).join("") + '</div>';
+}
+
+function personalizedTypeCards(codes, dominantCodes) {
+  return (codes || []).map((code) => {
+    const info = TYPE_COPY[code], type = getType(code);
+    if (!info || !type) return "";
+    const label = dominantCodes.includes(code) ? "ЗОНХИЛОХ ХЭВ ШИНЖ" : "ДАГАЛДАХ ХЭВ ШИНЖ";
+    return '<article class="personal-type" style="--type:' + type.color + '"><div class="personal-type-head"><span class="type-code">' + code + '</span><div><small>' + label + '</small><b>' + esc(info.title) + '</b></div></div><p>' + esc(info.description) + '</p><div><small>СУДАЛЖ ҮЗЭХ САЛБАР</small><span>' + esc(TYPE_SECTORS[code]) + '</span></div><div><small>МЭРГЭЖЛИЙН ЖИШЭЭ</small><span>' + esc(info.sourceCareers.slice(0, 3).join(" · ")) + '</span></div></article>';
   }).join("");
 }
 
