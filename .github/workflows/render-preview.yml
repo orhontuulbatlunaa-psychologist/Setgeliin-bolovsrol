@@ -4,7 +4,12 @@ on:
   workflow_dispatch:
   push:
     branches: [feature/holland-riasec-platform]
-    paths: [.github/workflows/render-preview.yml]
+    paths:
+      - .github/workflows/render-preview.yml
+      - api/_lib/report-pdf.js
+      - career-test/report-template.js
+      - career-test/scoring.js
+      - career-test/data.js
 
 permissions:
   contents: read
