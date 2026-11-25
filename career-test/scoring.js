@@ -107,13 +107,28 @@ export function compareAssessmentProfiles(tops) {
 }
 
 export function summarizeGeneralProfile(tops) {
+  const assessmentTops = [tops.interest || [], tops.ability || [], tops.profile || []];
+  const firstTopAppearance = (code) => {
+    for (let assessmentIndex = 0; assessmentIndex < assessmentTops.length; assessmentIndex += 1) {
+      const rankIndex = assessmentTops[assessmentIndex].indexOf(code);
+      if (rankIndex !== -1) return assessmentIndex * 3 + rankIndex;
+    }
+    return Number.MAX_SAFE_INTEGER;
+  };
+
+  // Давтамж тэнцсэн үед эхний гурван хэв шинжид анх түрүүлж орсон дарааллаар харуулна.
+  // Тестүүдийн өөр өөр түүхий оноог хооронд нь нэмэхгүй.
   const comparison = RI.map((type) => ({
     ...type,
-    appearances: countAppearances(type.code, [tops.interest, tops.ability, tops.profile]),
+    appearances: countAppearances(type.code, assessmentTops),
     totalAssessments: 3
-  })).sort((a, b) => b.appearances - a.appearances);
+  })).sort((a, b) =>
+    b.appearances - a.appearances ||
+    firstTopAppearance(a.code) - firstTopAppearance(b.code) ||
+    RI.findIndex((item) => item.code === a.code) - RI.findIndex((item) => item.code === b.code)
+  );
 
-  const sortedComparison = [...comparison].sort((a, b) => b.appearances - a.appearances);
+  const sortedComparison = [...comparison];
   const highestFrequency = sortedComparison[0]?.appearances ?? 0;
   const dominantItems = sortedComparison.filter((item) => item.appearances === highestFrequency);
   const remainingItems = sortedComparison.filter((item) => item.appearances < highestFrequency);
@@ -127,7 +142,7 @@ export function summarizeGeneralProfile(tops) {
     dominant: dominantItems.map((item) => item.code),
     secondary: secondaryItems.map((item) => item.code),
     ranked: [...dominantItems, ...secondaryItems].map((item) => item.code),
-    rule: "3 тест тус бүрийн эхний 3 хэв шинжийн давтамж (0–3)-г тоолно. Хамгийн их давтамжтай хэв шинж(үүд) зонхилох; тэдний дараа давтамжаар эхний хоёр хэв шинж дагалдах болно. Давтамж тэнцсэн хэв шинжүүдийг хасахгүй."
+    rule: "3 тест тус бүрийн эхний 3 хэв шинжийн давтамж (0–3)-г тоолно. Хамгийн их давтамжтай хэв шинж(үүд) зонхилох; тэдний дараа давтамжаар эхний хоёр хэв шинж дагалдах болно. Давтамж тэнцсэн хэв шинжүүдийг хасахгүй; дарааллыг тестүүдийн эхний 3-т анх орсон байрлалаар харуулна. Өөр өөр хэмжүүрийн түүхий оноог хооронд нь нэмэхгүй."
   };
 
   return { comparison, generalProfile };
