@@ -54,8 +54,8 @@ const ENGLISH_TYPE = {
   R: { name: "Realistic", pronunciation: "риалистик" },
   I: { name: "Investigative", pronunciation: "инвестигейтив" },
   A: { name: "Artistic", pronunciation: "артистик" },
-  S: { name: "Social", pronunciation: "соу-шэл" },
-  E: { name: "Enterprising", pronunciation: "энтэрпрайзинг" },
+  S: { name: "Social", pronunciation: "сошиал" },
+  E: { name: "Enterprising", pronunciation: "энтерпрайзинг" },
   C: { name: "Conventional", pronunciation: "кэнвэншэнэл" }
 };
 const TYPE_SECTORS = {
@@ -263,7 +263,7 @@ function careerCards(codes, dominantCount = 2) {
     const info = TYPE_COPY[code];
     if (!type || !info) return "";
     const modernSet = new Set(info.modern);
-    const careerList = info.sourceCareers.map((career) => `<li>${esc(career)}${modernSet.has(career) ? '<em>технологи, шинэчлэлтэй холбоотой жишээ</em>' : ""}</li>`).join("");
+    const careerList = info.sourceCareers.slice(0, 6).map((career) => `<li>${esc(career)}${modernSet.has(career) ? '<em>технологи, шинэчлэлтэй холбоотой жишээ</em>' : ""}</li>`).join("");
     return `<article class="career-card" style="--type:${type.color}">
       <div class="career-card-head"><span class="type-code">${code}</span><div><small>${index < dominantCount ? "ЗОНХИЛОХ ХЭВ ШИНЖ" : "ДАГАЛДАХ ХЭВ ШИНЖ"}</small><h3>${esc(info.title)}</h3></div></div>
       <p>${esc(info.description)}</p>
@@ -404,7 +404,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
       <li>Энэ мэргэжлийн бодит ажлын орчин, үүрэг хариуцлага надад тохирох уу?</li>
       <li>Ямар их, дээд сургууль болон хөтөлбөрөөр энэ мэргэжлийг эзэмшиж болох вэ?</li>
     </ol></div>
-    ${footer(8, code)}`;
+    ${footer(9, code)}`;
 
   const laborTrends = `
     ${pageHeader("ХӨДӨЛМӨРИЙН ЗАХ ЗЭЭЛИЙН СУДАЛГАА", "Ажил хөдөлмөр эрхлэлтийн ирээдүйн чиг хандлага", "Технологийн хөгжил, хүн ам зүйн өөрчлөлт, эдийн засгийн шинэ бүтэц, ногоон шилжилт нь мэргэжлийн эрэлт болон ажил үүргийн агуулгыг өөрчилж байна.")}
@@ -469,7 +469,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     </div>
     <div class="disclaimer"><b>Санамж</b><p>Энэ тайлан нь өөрийгөө танин мэдэх, мэргэжлийн боломжоо судлахад туслах мэдээлэл юм. Тестийн үр дүн нь мэргэжил сонголтын эцсийн шийдвэр, сэтгэл зүйн онош, амжилтын баталгаа биш. Сонголтоо бодит туршлага, сургалтын шаардлага, өөрийн үнэт зүйл болон зөвлөгөөтэй хамтатган гаргаарай.</p></div>
     <div class="source-note"><b>Агуулгын эх сурвалж</b><p>“Мэргэжил сонголтын Дж. Холландын арга” (9–12 анги) аргачлалын RIASEC тайлбар, Алхам 4–5; “Holland test- асуумж” эх асуумж. Мэргэжлийн жишээг аргачлалын Алхам 5-ын жагсаалтаас сонгов. Элсэлтийн хөтөлбөрийн жишээг 2026–2027 оны сургуулиудын албан ёсны мэдээлэлтэй тулгасан; элсэх жилийн журамтай дахин нягтална.</p></div>
-    ${footer(10, code)}`;
+    ${footer(12, code)}`;
 
   const style = `
   @page{size:A4;margin:0}
