@@ -1,11 +1,60 @@
-name: Render report preview
+name: Render RIASEC PDF preview
+
 on:
   workflow_dispatch:
   push:
     branches: [feature/holland-riasec-platform]
     paths: [.github/workflows/render-preview.yml]
+
+permissions:
+  contents: read
+
 jobs:
-  noop:
+  render-preview:
     runs-on: ubuntu-latest
     steps:
-      - run: echo ready
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install PDF dependencies
+        run: |
+          npm install --no-package-lock --no-audit --no-fund
+          sudo apt-get update -y
+          sudo apt-get install -y poppler-utils imagemagick
+      - name: Generate sample report
+        run: |
+          mkdir -p artifacts
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs/promises';
+          import { createRequire } from 'node:module';
+          import { ASSESSMENT } from './career-test/data.js';
+          import { calculateAssessmentResults } from './career-test/scoring.js';
+          const require = createRequire(import.meta.url);
+          const { renderAssessmentReportPdf } = require('./api/_lib/report-pdf.js');
+          const sums = (arr) => Object.fromEntries(arr.flatMap((sum, gi) => { let left = sum; return Array.from({length:6}, (_,qi) => { const v=Math.min(3,left); left-=v; return [String(gi+1)+'-'+String(qi+1),v]; }); }));
+          const answers = { interest:sums([9,11,7,17,14,10]), ability:sums([3,13,4,16,11,17]), profile:Object.fromEntries(ASSESSMENT.profilePairs.map((_,i)=>[String(i),0])) };
+          const results = calculateAssessmentResults(ASSESSMENT,answers);
+          const pdf = await renderAssessmentReportPdf({student:{fullName:'ЖИШЭЭ СУРАГЧ',grade:'10',group:'А'},results,submissionCode:'PREVIEW-2026',generatedAt:'2026-11-25T00:00:00.000Z'});
+          await fs.writeFile('artifacts/holland-riasec-report-preview.pdf',pdf);
+          console.log('PDF bytes:',pdf.length,'RIASEC:',results.generalProfile);
+          NODE
+      - name: Check PDF pages and render them
+        run: |
+          pdfinfo artifacts/holland-riasec-report-preview.pdf | tee artifacts/pdfinfo.txt
+          PAGES=$(pdfinfo artifacts/holland-riasec-report-preview.pdf | awk '/^Pages:/ {print $2}')
+          test "$PAGES" = "13"
+          mkdir -p artifacts/rendered
+          pdftoppm -png -r 110 artifacts/holland-riasec-report-preview.pdf artifacts/rendered/page
+          test "$(find artifacts/rendered -name 'page-*.png' | wc -l)" -eq 13
+          montage artifacts/rendered/page-*.png -thumbnail 340x480 -tile 4x -geometry +10+10 -background '#e9eeeb' artifacts/riasec-report-contact-sheet.jpg
+      - name: Upload PDF preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: holland-riasec-report-preview
+          path: |
+            artifacts/holland-riasec-report-preview.pdf
+            artifacts/riasec-report-contact-sheet.jpg
+            artifacts/pdfinfo.txt
+          if-no-files-found: error
+          retention-days: 7
