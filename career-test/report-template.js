@@ -380,15 +380,16 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     ${footer(7, code)}`;
 
   const personalized = `
-    ${pageHeader("ТАНЫ RIASEC ҮНЭЛГЭЭНИЙ ХУВИЙН ТАЙЛБАР", "Таны үр дүнд суурилсан мэргэжлийн чиг баримжаа", "Энэ тодорхойлолт нь таны сонирхол, өөрийн үнэлсэн чадавх, хос мэргэжлийн сонголтын үр дүнг нэгтгэн тайлбарлаж, судалж үзэх боломжит салбаруудыг санал болгоно.")}
+    ${pageHeader("СУРАГЧИЙН RIASEC ҮНЭЛГЭЭНД СУУРИЛСАН ТОДОРХОЙЛОЛТ", "Таны мэргэжлийн чиг баримжааны хувийн дүгнэлт", "Таны сонирхол, өөрийн үнэлсэн чадавх, мэргэжлийн хос сонголтыг уялдуулан тайлбарлаж, судалж үзэх боломжит салбар, мэргэжлийн чиглэлийг тодорхойлов.")}
     <div class="personal-summary"><b>Таны хариултаас харагдаж буй ерөнхий зураглал</b>
-      <p>Таны сонирхлын үнэлгээнд ${esc(nameFor(interestTop))} чиглэлүүд эхний байруудад эрэмбэлэгдсэн байна. Өөрийн үнэлсэн чадавхын хувьд ${esc(nameFor(abilityTop))} чиглэлүүд илүү тодорч, хос мэргэжлийн сонголтод ${esc(nameFor(profileTop))} чиглэлүүд харьцангуй олон сонгогджээ.</p>
-      <p>Гурван үнэлгээний эхний гурван үр дүнгийн давтамжаар ${esc(dominantText)} зонхилох, ${esc(secondaryText)} дагалдах хэв шинжээр илэрч байна. Иймээс дээрх чиглэлүүдийн огтлолцолд буй мэргэжил, ажлын орчныг эхэлж судлах нь үндэслэлтэй.</p></div>
+      <p>Таны хариултаас харахад та ${esc(nameFor(interestTop))} хэв шинжтэй холбоотой үйл ажиллагаанд илүү сонирхолтой байж болох бөгөөд ${esc(nameFor(abilityTop))} чиглэлийн ур чадварыг өөртөө илүүтэй гэж үнэлжээ. Мэргэжлийн хос сонголтын үед ${esc(nameFor(profileTop))} чиглэлүүдийн сонголт харьцангуй олон давтагдсан байна.</p>
+      <p>Гурван үнэлгээний эхний гурван үр дүнгийн давтамжаар ${esc(dominantText)} зонхилох, ${esc(secondaryText)} дагалдах хэв шинжээр илэрч байна. Иймээс эдгээр чиглэлийн огтлолцолд буй мэргэжил, ажлын орчныг эхэлж судлах нь зүйтэй.</p></div>
     <div class="personal-triad">
       <div><small>СОНИРХЛЫН ҮНЭЛГЭЭ</small><b>${esc(nameFor(interestTop))}</b><p>${esc(interestTop.map((code) => TYPE_COPY[code]?.description || "").filter(Boolean).join(" "))}</p></div>
       <div><small>ӨӨРИЙН ҮНЭЛСЭН ЧАДАВХ</small><b>${esc(nameFor(abilityTop))}</b><p>${esc(abilityTop.map((code) => TYPE_COPY[code]?.qualities || "").filter(Boolean).join(" "))}</p></div>
       <div><small>МЭРГЭЖЛИЙН ХОС СОНГОЛТ</small><b>${esc(nameFor(profileTop))}</b><p>42 хос мэргэжлээс сонгосон хариултын кодын давтамжид дээрх чиглэлүүд илүү олон илэрсэн байна.</p></div>
     </div>
+    <div class="personal-fit"><b>Гурван үнэлгээний нийцэл ба ялгаа</b><p>${esc(patternText)}</p></div>
     <div class="section-subhead"><b>Танд судалж үзэхэд тохиромжтой байж болох салбар, мэргэжил</b><small>Зонхилох ба дагалдах хэв шинжийн уялдаа</small></div>
     <div class="personal-type-grid">${personalizedTypeCards(overviewCodes, dominantCodes)}</div>
     <div class="personal-caution"><b>Үр дүнг хэрхэн зөв ашиглах вэ?</b><p>Энэ тодорхойлолт нь таны ирээдүйн мэргэжил, авьяас, амжилтыг эцэслэн тогтоохгүй. Тестийн оноог бодит туршлага, дуртай хичээл, эзэмшсэн ур чадвар, үнэт зүйл, ажлын орчин болон тухайн мэргэжлийн сургалтын шаардлагатай харьцуулан эргэцүүлээрэй. Мэргэжил сонголтын эцсийн шийдвэрийг олон талын мэдээлэлд тулгуурлан гаргах нь зүйтэй.</p></div>
@@ -697,6 +698,9 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   .personal-summary{background:#f1f6f1;border-left:1.5mm solid #327c79;border-radius:3mm;padding:4mm 5mm;margin-bottom:3mm}
   .personal-summary>b{font-size:8.5pt}
   .personal-summary p{font-size:7.2pt;line-height:1.42;color:#62736b;margin:1.5mm 0 0}
+  .personal-fit{padding:3mm 4mm;border:1px solid #e2ebe4;border-radius:3mm;margin:2mm 0 3mm}
+  .personal-fit b{font-size:7.4pt}
+  .personal-fit p{font-size:6.4pt;line-height:1.35;color:#69776f;margin:1mm 0 0}
   .personal-triad{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin:3mm 0}
   .personal-triad>div{border:1px solid #e1eae4;border-radius:3mm;padding:3mm}
   .personal-triad small,.personal-triad b{display:block}
