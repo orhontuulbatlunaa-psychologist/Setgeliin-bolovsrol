@@ -219,6 +219,9 @@ function riasecSpectrum() {
   }).join("") + '</div>';
 }
 
+function riasecLegend() {
+  return '<div class="riasec-legend">' + RI.map((type) => '<span style="--type:' + type.color + '"><b>' + type.code + '</b>' + esc(TYPE_COPY[type.code].title) + '</span>').join("") + '</div>';
+}
 function personalizedTypeCards(codes, dominantCodes) {
   return (codes || []).map((code) => {
     const info = TYPE_COPY[code], type = getType(code);
@@ -340,7 +343,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   const interest = `
     ${pageHeader("ТЕСТ №1 · СОНИРХОЛ", "Таны мэргэжилд чиглэсэн хүсэл сонирхол", "Асуулт бүрт өгсөн 0–3 оноог RIASEC-ийн зургаан бүлгээр тус тусад нь нийлүүлэв.")}
     <div class="result-kpis"><div><small>ХАМГИЙН ӨНДӨР ОНОО</small><b>${results.interest.reduce((a,b)=>a.score>=b.score?a:b).score}/18</b></div><div><small>ТЭРГҮҮЛЖ БУЙ ЧИГЛЭЛ</small><b>${esc(nameFor(interestTop))}</b></div><div><small>ХАРИУЛТЫН ТОО</small><b>36 / 36</b></div></div>
-    <div class="chart-panel"><div class="chart-title"><b>RIASEC зургаан өнцөгт</b><span>Тэмдэглэгээний хэмжээ: 1, 2, 3-р өндөр онооны түвшин</span></div>${radarSvg("Тест №1 сонирхлын үнэлгээ", results.interest, "interest")}<div class="chart-foot"><span><i class="dot big"></i> 1-р өндөр</span><span><i class="dot mid"></i> 2-р өндөр</span><span><i class="dot small"></i> 3-р өндөр</span></div></div>
+    <div class="chart-panel"><div class="chart-title"><b>RIASEC зургаан өнцөгт</b><span>Тэмдэглэгээний хэмжээ: 1, 2, 3-р өндөр онооны түвшин</span></div>${radarSvg("Тест №1 сонирхлын үнэлгээ", results.interest, "interest")}${riasecLegend()}<div class="chart-foot"><span><i class="dot big"></i> 1-р өндөр</span><span><i class="dot mid"></i> 2-р өндөр</span><span><i class="dot small"></i> 3-р өндөр</span></div></div>
     <div class="section-subhead"><b>Зургаан бүлгийн оноо</b><small>Бүлэг бүрийн дээд оноо 18</small></div><div class="score-table">${scoreRows(results.interest, "interest")}</div>
     <div class="interpretation"><b>Энэ үр дүн юуг өгүүлж байна вэ?</b><p>Таны хамгийн өндөр оноотой бүлгүүд нь одоогоор ямар төрлийн үйл ажиллагаа илүү сонирхол татаж байгааг илтгэнэ. ${esc(nameFor(interestTop))} гэсэн чиглэлийг эхний ээлжинд судалж, түүний дараах хэв шинжүүдтэйгээ хамтатган мэргэжлийн жишээг харьцуулаарай.</p></div>
     ${footer(4, code)}`;
@@ -348,7 +351,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   const ability = `
     ${pageHeader("ТЕСТ №2 · ЧАДАВХ", "Таны өөрийн үнэлсэн чадавх", "Асуулт бүрийн 0–3 оноог RIASEC-ийн зургаан бүлгээр нийлүүлсэн. Энэ нь өөрийн үнэлгээ болохоос ур чадварын шалгалт, онош биш.")}
     <div class="result-kpis"><div><small>ХАМГИЙН ӨНДӨР ОНОО</small><b>${results.ability.reduce((a,b)=>a.score>=b.score?a:b).score}/18</b></div><div><small>ТЭРГҮҮЛЖ БУЙ ЧИГЛЭЛ</small><b>${esc(nameFor(abilityTop))}</b></div><div><small>ХАРИУЛТЫН ТОО</small><b>36 / 36</b></div></div>
-    <div class="chart-panel"><div class="chart-title"><b>RIASEC зургаан өнцөгт</b><span>Тэмдэглэгээний хэмжээ: 1, 2, 3-р өндөр онооны түвшин</span></div>${radarSvg("Тест №2 чадавхийн үнэлгээ", results.ability, "ability")}<div class="chart-foot"><span><i class="dot big"></i> 1-р өндөр</span><span><i class="dot mid"></i> 2-р өндөр</span><span><i class="dot small"></i> 3-р өндөр</span></div></div>
+    <div class="chart-panel"><div class="chart-title"><b>RIASEC зургаан өнцөгт</b><span>Тэмдэглэгээний хэмжээ: 1, 2, 3-р өндөр онооны түвшин</span></div>${radarSvg("Тест №2 чадавхийн үнэлгээ", results.ability, "ability")}${riasecLegend()}<div class="chart-foot"><span><i class="dot big"></i> 1-р өндөр</span><span><i class="dot mid"></i> 2-р өндөр</span><span><i class="dot small"></i> 3-р өндөр</span></div></div>
     <div class="section-subhead"><b>Зургаан бүлгийн оноо</b><small>Бүлэг бүрийн дээд оноо 18</small></div><div class="score-table">${scoreRows(results.ability, "ability")}</div>
     <div class="interpretation"><b>Өөрийн үнэлгээг хэрхэн ашиглах вэ?</b><p>Өндөр оноотой бүлгүүд нь таны өөрөө хийж чадна гэж үнэлсэн үйл ажиллагааг харуулна. Энэ дүнг бодит туршлага, хичээлийн амжилт, багш болон ойр хүмүүсийн ажиглалттай харьцуулбал илүү бодитой эргэцүүлэл болно.</p></div>
     ${footer(5, code)}`;
@@ -357,30 +360,44 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
     ${pageHeader("ТЕСТ №3 · МЭРГЭЖЛИЙН ХЭВ ШИНЖ", "Хос мэргэжлийн сонголтын үр дүн", "42 хосын нүд бүрт хоёр мэргэжил өгөгдсөн. Нийт 84 мэргэжлийн нэрээс хос бүрт нэгийг сонгож, 42 сонголт бүртгэгдсэн.")}
     <div class="result-kpis"><div><small>ХОСЫН ТОО</small><b>42 хос</b></div><div><small>СОНГОЛТЫН ТОО</small><b>42 / 42</b></div><div><small>ТЭРГҮҮЛЖ БУЙ ЧИГЛЭЛ</small><b>${esc(nameFor(profileTop))}</b></div></div>
     <div class="profile-highlight"><div><small>ТЕСТ №3-ЫН ЭХНИЙ ХЭВ ШИНЖҮҮД</small><h3>${esc(nameFor(profileTop))}</h3><p>Хос бүрээс сонгосон мэргэжлийн өмнөх 1–6 кодыг RIASEC бүлгээр тоолсон.</p></div><div class="profile-count">42<small>сонголт</small></div></div>
-    <div class="chart-panel profile-radar"><div class="chart-title"><b>RIASEC зургаан өнцөгт</b><span>Хос мэргэжлийн сонголтын давтамж · нийт 42</span></div>${radarSvg("Тест №3 мэргэжлийн хэв шинжийн үнэлгээ", results.profile, "profile")}<div class="chart-foot"><span>Тэмдэглэгээний хэмжээ нь онооны эрэмбийн түвшинг харуулна</span></div></div>
+    <div class="chart-panel profile-radar"><div class="chart-title"><b>RIASEC зургаан өнцөгт</b><span>Хос мэргэжлийн сонголтын давтамж · нийт 42</span></div>${radarSvg("Тест №3 мэргэжлийн хэв шинжийн үнэлгээ", results.profile, "profile")}${riasecLegend()}<div class="chart-foot"><span>Тэмдэглэгээний хэмжээ нь онооны эрэмбийн түвшинг харуулна</span></div></div>
     <div class="section-subhead"><b>Зургаан хэв шинжийн сонголтын давтамж</b><small>Нийлбэр 42</small></div><div class="score-table">${scoreRows(results.profile, "profile")}</div>
     <div class="profile-method"><b>Бөглөх зарчмын сануулга</b><p>Энэ хэсэгт хосын хоёр мэргэжлээс танд “арай дээр” санагдсан нэгийг сонгоно. Хоёулаа таалагдахгүй байсан ч харьцуулахад арай дээр гэж үзсэн нэгийг сонгодог. Тиймээс энэ дүн нь тухайн хосын харьцуулсан сонголтын давтамж юм.</p></div>
     ${footer(6, code)}`;
 
   const integrated = `
-    ${pageHeader("ГУРВАН ТЕСТИЙН НЭГДСЭН ХАРЬЦУУЛАЛТ", "Сонирхол · Чадавх · Мэргэжлийн хэв шинж", "Эх аргачлалын дагуу гурван үр дүнг Холландын зургаан өнцөгт дээр давхарлан харьцууллаа.")}
-    <div class="integrated-key"><span><i style="--key:#327c79"></i>Дотор: сонирхол</span><span><i style="--key:#d18a56"></i>Дунд: чадавх</span><span><i style="--key:#ad79b4"></i>Гадна: мэргэжлийн хэв шинж</span></div>
-    <div class="integrated-panel">${integratedSvg(results)}</div>
-    <div class="comparison-columns">
-      <div><small>СОНИРХОЛ</small><b>${esc(nameFor(interestTop))}</b></div>
-      <div><small>ЧАДАВХ</small><b>${esc(nameFor(abilityTop))}</b></div>
-      <div><small>ХЭВ ШИНЖ</small><b>${esc(nameFor(profileTop))}</b></div>
+    ${pageHeader("ГУРВАН ТЕСТИЙН НЭГДСЭН ХАРЬЦУУЛАЛТ", "Сонирхол · Чадавх · Мэргэжлийн хэв шинж", "Гурван үнэлгээ тус бүрийн дүр зургийг жижиг графикаар, нэгдсэн давхцлыг том графикаар харуулав.")}
+    <div class="mini-chart-grid">
+      <div class="mini-chart-card"><b>01 · СОНИРХОЛ</b>${radarSvg("Тест №1 сонирхол", results.interest, "interest")}<small>${esc(nameFor(interestTop))}</small></div>
+      <div class="mini-chart-card"><b>02 · ЧАДАВХ</b>${radarSvg("Тест №2 чадавх", results.ability, "ability")}<small>${esc(nameFor(abilityTop))}</small></div>
+      <div class="mini-chart-card"><b>03 · МЭРГЭЖЛИЙН ХЭВ ШИНЖ</b>${radarSvg("Тест №3 мэргэжлийн хэв шинж", results.profile, "profile")}<small>${esc(nameFor(profileTop))}</small></div>
     </div>
-    <div class="common-box"><b>Гурван үр дүнгийн давхцал</b><p>${common.length ? esc(nameFor(common)) : "Гурван үнэлгээний эхний гурван хэв шинжид нийтлэг код илрээгүй."}</p></div>
+    <div class="overlap-panel"><div class="chart-title"><b>Гурван тестийн нэгдсэн давхцал</b><span>Хэв шинж тус бүрийн давтамж · 0–3</span></div>${overlapRadarSvg(comparison)}</div>
+    <div class="riasec-spectrum-wrap"><div class="spectrum-heading"><b>RIASEC · зургаан хэв шинж</b><small>Өнгөний код нь 3–6-р хуудсанд ашигласантай ижил</small></div>${riasecSpectrum()}</div>
+    <div class="integrated-conclusion"><div><small>МЭРГЭЖЛИЙН ЗОНХИЛОХ ХЭВ ШИНЖ</small><b>${esc(dominantText)}</b></div><div><small>ДАГАЛДАХ ХЭВ ШИНЖ</small><b>${esc(secondaryText)}</b></div></div>
     <div class="comparison-narrative"><b>Давхцал ба зөрүүний тайлбар</b><p>${esc(patternText)}</p></div>
-    <div class="overall-final"><div><small>ЗОНХИЛОХ ЕРӨНХИЙ ХЭВ ШИНЖ</small><b>${esc(dominantText)}</b></div><div><small>ДАГАЛДАХ ХЭВ ШИНЖ</small><b>${esc(secondaryText)}</b></div></div>
-    <div class="tiny-note">Нэгдсэн давтамжийг тооцохдоо гурван тест тус бүрийн эхний гурван (тэнцсэн бол тэнцсэн бүх) хэв шинжид орсон эсэхийг тоолсон. Өөр өөр хэмжүүрийн түүхий оноог хооронд нь нэмээгүй.</div>
+    <div class="tiny-note">Давтамж нь гурван тест тус бүрийн эхний гурван (гуравдугаар байранд тэнцсэн бол тэнцсэн бүх) хэв шинжид орсон тоог харуулна. Өөр хэмжүүрийн түүхий оноонуудыг хооронд нь нэмээгүй.</div>
     ${footer(7, code)}`;
 
+  const personalized = `
+    ${pageHeader("ТАНЫ RIASEC ҮНЭЛГЭЭНИЙ ХУВИЙН ТАЙЛБАР", "Таны үр дүнд суурилсан мэргэжлийн чиг баримжаа", "Энэ тодорхойлолт нь таны сонирхол, өөрийн үнэлсэн чадавх, хос мэргэжлийн сонголтын үр дүнг нэгтгэн тайлбарлаж, судалж үзэх боломжит салбаруудыг санал болгоно.")}
+    <div class="personal-summary"><b>Таны хариултаас харагдаж буй ерөнхий зураглал</b>
+      <p>Таны сонирхлын үнэлгээнд ${esc(nameFor(interestTop))} чиглэлүүд эхний байруудад эрэмбэлэгдсэн байна. Өөрийн үнэлсэн чадавхын хувьд ${esc(nameFor(abilityTop))} чиглэлүүд илүү тодорч, хос мэргэжлийн сонголтод ${esc(nameFor(profileTop))} чиглэлүүд харьцангуй олон сонгогджээ.</p>
+      <p>Гурван үнэлгээний эхний гурван үр дүнгийн давтамжаар ${esc(dominantText)} зонхилох, ${esc(secondaryText)} дагалдах хэв шинжээр илэрч байна. Иймээс дээрх чиглэлүүдийн огтлолцолд буй мэргэжил, ажлын орчныг эхэлж судлах нь үндэслэлтэй.</p></div>
+    <div class="personal-triad">
+      <div><small>СОНИРХЛЫН ҮНЭЛГЭЭ</small><b>${esc(nameFor(interestTop))}</b><p>${esc(interestTop.map((code) => TYPE_COPY[code]?.description || "").filter(Boolean).join(" "))}</p></div>
+      <div><small>ӨӨРИЙН ҮНЭЛСЭН ЧАДАВХ</small><b>${esc(nameFor(abilityTop))}</b><p>${esc(abilityTop.map((code) => TYPE_COPY[code]?.qualities || "").filter(Boolean).join(" "))}</p></div>
+      <div><small>МЭРГЭЖЛИЙН ХОС СОНГОЛТ</small><b>${esc(nameFor(profileTop))}</b><p>42 хос мэргэжлээс сонгосон хариултын кодын давтамжид дээрх чиглэлүүд илүү олон илэрсэн байна.</p></div>
+    </div>
+    <div class="section-subhead"><b>Танд судалж үзэхэд тохиромжтой байж болох салбар, мэргэжил</b><small>Зонхилох ба дагалдах хэв шинжийн уялдаа</small></div>
+    <div class="personal-type-grid">${personalizedTypeCards(overviewCodes, dominantCodes)}</div>
+    <div class="personal-caution"><b>Үр дүнг хэрхэн зөв ашиглах вэ?</b><p>Энэ тодорхойлолт нь таны ирээдүйн мэргэжил, авьяас, амжилтыг эцэслэн тогтоохгүй. Тестийн оноог бодит туршлага, дуртай хичээл, эзэмшсэн ур чадвар, үнэт зүйл, ажлын орчин болон тухайн мэргэжлийн сургалтын шаардлагатай харьцуулан эргэцүүлээрэй. Мэргэжил сонголтын эцсийн шийдвэрийг олон талын мэдээлэлд тулгуурлан гаргах нь зүйтэй.</p></div>
+    ${footer(8, code)}`;
+
   const careers = `
-    ${pageHeader("МЭРГЭЖЛИЙН СУДАЛГААНЫ ЧИГЛЭЛ", "Танд судалж үзэх мэргэжлийн жишээнүүд", "Зонхилох хэв шинжийн жишээг эхэлж, дагалдах хэв шинжийн мэргэжлүүдийг хамтад нь судлаарай.")}
-    <div class="career-order"><span>ЭХЛЭЭД СУДЛАХ</span><b>${esc(dominantText)}</b><span>ДАРАА НЬ ХАРЬЦУУЛАХ</span><b>${esc(secondaryText)}</b></div>
-    <div class="career-grid">${careerCards(overviewCodes.slice(0, 4))}</div>
+    ${pageHeader("МЭРГЭЖЛИЙН СУДАЛГААНЫ ЧИГЛЭЛ", "Зонхилох хэв шинжид тохирох мэргэжлийн жишээ", "Зонхилох хэв шинжийн мэргэжлийн жишээг эхэлж, дагалдах хэв шинжийн боломжуудтай харьцуулан судлаарай.")}
+    <div class="career-order"><span>ЗОНХИЛОХ ХЭВ ШИНЖ</span><b>${esc(dominantText)}</b><span>ДАГАЛДАХ ХЭВ ШИНЖ</span><b>${esc(secondaryText)}</b></div>
+    <div class="career-grid">${careerCards(overviewCodes, dominantCodes.length)}</div>
     <div class="career-guidance"><b>Мэргэжил сонгохдоо өөрөөсөө асуугаарай</b><ol>
       <li>Энэ ажлын өдөр тутмын үйл ажиллагаа миний сонирхолд нийцэх үү?</li>
       <li>Шаардлагатай суурь хичээл, чадварыг эзэмшихэд бэлэн үү?</li>
