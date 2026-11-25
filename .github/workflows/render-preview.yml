@@ -1,0 +1,11 @@
+name: Render report preview
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/holland-riasec-platform]
+    paths: [.github/workflows/render-preview.yml]
+jobs:
+  noop:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ready
