@@ -194,7 +194,7 @@ function rankedTypeRows(codes, scores) {
     const item = scores.find((score) => score.code === code);
     const rank = item ? distinct.indexOf(item.score) + 1 : 0;
     const roman = rank === 1 ? "I" : rank === 2 ? "II" : rank === 3 ? "III" : String(rank);
-    return '<div class="ranked-type"><b>' + roman + '</b><span>' + esc(TYPE_COPY[code]?.title || code) + '</span></div>';
+    return '<div class="ranked-type"><b>' + roman + '</b><span>' + esc(TYPE_COPY[code]?.title || code) + '</span><em>' + esc(item?.score ?? 0) + '/' + esc(item?.max ?? 0) + '</em></div>';
   }).join("");
 }
 
@@ -747,6 +747,7 @@ export function buildReportHtml({ student, results, submissionCode, logoDataUri 
   .source-note{margin-top:3mm;padding:2.5mm 0}
   .cover-contact{display:flex;gap:8mm;flex-wrap:wrap;margin-top:2mm;color:#52736c;font-size:7pt;letter-spacing:.04em}
   .ranked-type{display:flex;gap:1.6mm;align-items:baseline;font-size:7pt;line-height:1.35;margin:.7mm 0;color:#4f665e}
+  .ranked-type em{margin-left:auto;font-style:normal;font-size:6.1pt;font-weight:700;color:#327c79;white-space:nowrap}
   .ranked-type b{min-width:5mm;color:#d18a56;font-size:6.5pt}
   .summary-ranks{margin:1.5mm 0;min-height:15mm}
   .english-type{display:block;font-size:6.7pt;color:#327c79;margin:-.5mm 0 1mm;letter-spacing:.02em}
