@@ -1,24 +1,65 @@
-# Holland RIASEC — Preview integration
+# Holland RIASEC — GitHub Preview integration
 
-This branch is a staging workspace. The scoring engine is compiled with strict TypeScript settings before integration.
+**Status:** staging / not production-ready  
+**Branch:** `feature/holland-riasec-integration`  
+**Source:** user-provided Mongolian Holland questionnaire and manual.
 
-## Validation completed
-- `Scoring_Engine.ts` passes `tsc --strict --target ES2020 --module commonjs`.
-- The workbook contains five sheets: overview, Test 1, Test 2, Test 3 pairs, and validation cases.
+## 1. Modules in this branch
 
-## Required application safeguards
-- Save each answer server-side as it changes; show save state and retry failures.
-- Recalculate all three tests on the server from raw answers; never trust client-calculated scores.
-- Test 1 and Test 2: 36 integer responses, each 0–3; six RIASEC groups, maximum 18 per type.
-- Test 3: exactly 42 pair selections; validate each selection against the two occupations in that pair; count the selected RIASEC code. Maximum total selections: 42.
-- Do not add raw scores across tests: the metrics differ (0–18 vs. 0–42).
-- Keep admin review and report approval separate from scoring. No report is sent before approval.
-- Keep raw answers immutable and version every recalculation.
+- `Scoring_Engine.ts` — original scoring module at repository root.
+- `src/lib/scoring/Step4Analyzer.ts` — source-faithful comparison of the three profiles.
+- `.github/workflows/riasec-scoring.yml` — strict TypeScript checks for pull requests and staging-branch pushes.
+- `Scoring_Methodology.docx` and `Scoring_Validation.xlsx` remain deliverables in the local handoff package; they are not yet committed as binary files in this branch.
 
-## Step 4 comparison (source-faithful)
-Use `Step4_Analyzer.ts`. Display three concentric hexagons in R–I–A–S–E–C order: interest on the inner ring, ability on the middle ring, occupation on the outer ring. Compare the top-three sets and identify the source's three cases: (1) overlap across all three tests; (2) interest and ability overlap but occupation differs; (3) all three differ strongly. In case 1, show common candidates and adjacent types. The source says the highest score among overlapping corners becomes dominant, but it does not define a cross-test common numeric scale or a tie-break for 18-point versus 42-count measures. Do not add or normalize raw scores; have the counselor confirm the dominant and two accompanying types. In case 2, advise expanding career knowledge and consulting parents, teachers, or a career counselor. In case 3, show the three reflection questions and recommend using ability as a reference if decision-making is difficult.
+## 2. Source scoring model
 
-## Build
-`npx tsc --strict --target ES2020 --module commonjs --outDir dist Scoring_Engine.ts`
+- Test 1 (interest): 36 answers, each 0–3; six RIASEC groups; maximum 18 per type.
+- Test 2 (self-assessed ability): 36 answers, each 0–3; six RIASEC groups; maximum 18 per type.
+- Test 3 (occupational preference): 42 paired choices; one occupation selected from each pair; count the RIASEC code attached to the selected occupation; maximum total selections 42.
+- Equal scores remain tied. Keep every type tied at the third-place boundary; do not truncate tied profiles.
+- Do not add raw scores from different tests: the source gives no common cross-test scale, weighting, or normalization formula.
 
-This branch is not production-ready until source DOCX/XLSX files are committed as binary assets, the nine validation cases are run against the engine, application/API tests pass, and a Vercel Preview deployment is reviewed.
+## 3. Step 4 comparison
+
+The UI should present three aligned RIASEC hexagons in the same R–I–A–S–E–C order:
+1. Inner ring — interest.
+2. Middle ring — self-assessed ability.
+3. Outer ring — occupational preference.
+
+`src/lib/scoring/Step4Analyzer.ts` identifies the source-described patterns:
+- `THREE_WAY_OVERLAP`: at least one type appears in all three top profiles. The analyzer returns the common candidates and adjacent-type candidates. The counselor confirms the dominant and two accompanying types; no unsupported numeric composite is invented.
+- `INTEREST_ABILITY_OVERLAP`: interest and ability overlap, but the occupation profile differs. Show the source interpretation: career knowledge may be limited or choices may have been influenced by superficial factors such as prestige or salary. Recommend career exploration and discussion with parents, teachers, or a career counselor.
+- `THREE_WAY_DIVERGENCE`: no interest–ability overlap. Show the source reflection questions: “What do I really like?”, “What are my abilities?”, and “What work/career can I succeed in?” If decision-making is difficult, ability may be used as a reference and the participant may consult parents, teachers, or a counselor.
+
+All Step 4 outcomes require counselor confirmation before a report is approved. This is guidance, not diagnosis or a guaranteed career prediction.
+
+## 4. Build and CI
+
+Local strict check:
+```bash
+npx tsc --strict --target ES2020 --module commonjs --noEmit Scoring_Engine.ts
+npx tsc --strict --target ES2020 --module commonjs --noEmit src/lib/scoring/Step4Analyzer.ts
+```
+
+GitHub Actions workflow runs the same strict type-checks on branch pushes and PRs.
+
+## 5. Required application integration
+
+1. Build participant registration and create a unique test attempt.
+2. Render all 36 + 36 + 42 source questions in the exact source order.
+3. Autosave each answer server-side immediately; show saving/saved/error state and retry failed saves.
+4. Recalculate from raw answers on the server; never trust client-supplied scores.
+5. Persist raw answers, score snapshots, algorithm version, and timestamps.
+6. Restrict admin review and report approval to authenticated administrators; log decisions.
+7. Send a report only after explicit administrator approval.
+8. Apply database access policies and keep service-role secrets server-only.
+
+## 6. Current deployment status
+
+This is a draft review branch, not a deployed product. The current repository still contains the original static-site structure; a full application framework, database, autosave API, administrator workflow, and report delivery have not yet been integrated. No Vercel Preview URL is claimed until a deployment is visible and tested.
+
+Before production:
+- verify all 42 Test 3 pair-to-code mappings against the source document;
+- run the complete validation workbook against the committed scoring engine;
+- test autosave, resume, duplicate submissions, access control, admin approval, and report delivery;
+- have a qualified career-guidance professional review the interpretation wording and sample profiles.
