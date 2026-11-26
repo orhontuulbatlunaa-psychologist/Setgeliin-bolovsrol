@@ -63,3 +63,12 @@ Before production:
 - run the complete validation workbook against the committed scoring engine;
 - test autosave, resume, duplicate submissions, access control, admin approval, and report delivery;
 - have a qualified career-guidance professional review the interpretation wording and sample profiles.
+
+## 7. Latest verification (2026-11-26)
+
+- Fixed the strict TypeScript error in Test 3 choice validation by validating untrusted choice values before indexing the RIASEC score record.
+- GitHub Actions run [#45798724190](https://github.com/orhontuulbatlunaa-psychologist/Setgeliin-bolovsrol/actions/runs/45798724190) completed successfully; both strict type-check steps passed.
+- Vercel posted a Ready Preview deployment for the updated feature branch. This confirms deployment availability only; it does not confirm that the RIASEC test flow is implemented in the page.
+- The current tracked application entry point is still the static `index.html`; no test UI, server scoring endpoint, persistence, administrator approval flow, or email delivery is present in the tracked source files.
+- The source questionnaire/manual files are not present in this repository tree. Therefore the exact Test 1 item correction (score 3), Test 3 tie/pass wording, and all 42 pair-to-code mappings have not yet been independently cross-checked against the primary source. The current engine preserves equal-score ties but does not emit a separate Test 3 pass/fail status.
+- Do not merge this draft PR to `main` until source mapping validation, deterministic test fixtures, and application integration are complete.
