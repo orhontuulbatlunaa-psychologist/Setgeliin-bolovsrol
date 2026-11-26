@@ -33,9 +33,14 @@ function scoreLikert(answers:readonly number[],name:string):TestScore {
 export function scoreInterest(a:readonly number[]){return scoreLikert(a,"Тест 1");}
 export function scoreAbility(a:readonly number[]){return scoreLikert(a,"Тест 2");}
 export function scoreOccupation(selected:readonly Code[]):TestScore {
- assert(Array.isArray(selected)&&selected.length===42,"Тест 3: 42 хос бүрээс нэг сонголт шаардлагатай.");
+ const choices: unknown = selected;
+ assert(Array.isArray(choices)&&choices.length===42,"Тест 3: 42 хос бүрээс нэг сонголт шаардлагатай.");
  const s:Scores={R:0,I:0,A:0,S:0,E:0,C:0};
- selected.forEach((v,i)=>{assert(TEST3_PAIRS[i].includes(v),"Тест 3: "+(i+1)+"-р хосын сонголт тухайн хоёр мэргэжлийн аль нэг байх ёстой.");s[v]++;});
+ (choices as unknown[]).forEach((raw,i)=>{
+  assert(typeof raw==="string"&&(TEST3_PAIRS[i] as readonly string[]).includes(raw),"Тест 3: "+(i+1)+"-р хосын сонголт тухайн хоёр мэргэжлийн аль нэг байх ёстой.");
+  const v=raw as Code;
+  s[v]++;
+ });
  return rank(s,42);
 }
 export function scoreAll(a:{interest:readonly number[];ability:readonly number[];occupation:readonly Code[]}):ThreeTests {
