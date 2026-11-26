@@ -50,6 +50,7 @@ form.addEventListener("submit",e=>{
  const title=document.createElement("h2");title.textContent="Таны онооны хураангуй";result.append(title);
  function renderScores(name,arr,max){const sub=document.createElement("h3");sub.textContent=name;result.append(sub);const grid=document.createElement("div");grid.className="score";arr.forEach((v,i)=>{const d=document.createElement("div");d.textContent=types[i][0]+" — "+types[i][1]+": "+v+" / "+max;grid.append(d);});result.append(grid);const top=document.createElement("p");top.innerHTML="<b>Гуравдугаар байрт багтсан бүх хэв шинж:</b> "+rank(arr).join(", ");result.append(top);}
  renderScores("Тест 1 · Хүсэл сонирхол",sums,18);renderScores("Тест 2 · Чадавхийн өөрийн үнэлгээ",ability,18);renderScores("Тест 3 · Мэргэжлийн хэв шинж",occupation,42);
+ const occupationMax=Math.max(...occupation);const occupationLeaders=occupation.filter(v=>v===occupationMax).length;const tieStatus=document.createElement("p");tieStatus.className="notice";tieStatus.textContent=occupationLeaders>1?"Тэнцсэн":"Тэнцээгүй";result.append(tieStatus);
  const interestTop=rank(sums),abilityTop=rank(ability),occupationTop=rank(occupation);
  const sharedIA=interestTop.filter(code=>abilityTop.includes(code));
  const sharedAll=sharedIA.filter(code=>occupationTop.includes(code));
