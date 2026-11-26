@@ -64,11 +64,14 @@ Before production:
 - test autosave, resume, duplicate submissions, access control, admin approval, and report delivery;
 - have a qualified career-guidance professional review the interpretation wording and sample profiles.
 
-## 7. Latest verification (2026-11-26)
+## 7. Source-document audit and current verification
 
-- Fixed the strict TypeScript error in Test 3 choice validation by validating untrusted choice values before indexing the RIASEC score record.
-- GitHub Actions run [#45798724190](https://github.com/orhontuulbatlunaa-psychologist/Setgeliin-bolovsrol/actions/runs/45798724190) completed successfully; both strict type-check steps passed.
-- Vercel posted a Ready Preview deployment for the updated feature branch. This confirms deployment availability only; it does not confirm that the RIASEC test flow is implemented in the page.
-- The current tracked application entry point is still the static `index.html`; no test UI, server scoring endpoint, persistence, administrator approval flow, or email delivery is present in the tracked source files.
-- The source questionnaire/manual files are not present in this repository tree. Therefore the exact Test 1 item correction (score 3), Test 3 tie/pass wording, and all 42 pair-to-code mappings have not yet been independently cross-checked against the primary source. The current engine preserves equal-score ties but does not emit a separate Test 3 pass/fail status.
-- Do not merge this draft PR to `main` until source mapping validation, deterministic test fixtures, and application integration are complete.
+- The user-provided 38-page Mongolian Holland manual has now been reviewed, including embedded hexagon diagrams and sample result pages.
+- Test 3 has 42 two-occupation pairs on printed pages 14–16. The 42 ordered pair-code entries in `TEST3_PAIRS` were compared against the source; **42/42 match**.
+- The source's printed Test 3 example on pages 35–36 lists type counts `6,13,7,3,7,5`, which sum to **41**, while the stated total is 42. This printed example is internally inconsistent and must not be used as a passing golden fixture.
+- Test 1 printed page 5 omits the `3` option in two rows in the first group. The overall response scale and chart maximum are 0–3 and the user confirmed the corrected score is 3; the engine accepts 0–3 for all 36 Test 1 items. Keep this source-printing defect documented for source-owner sign-off.
+- Test 1 and Test 2 use six groups of six questions, each scored 0–3; each RIASEC type therefore ranges 0–18. Test 3 counts 42 selections. No raw-score sum or weighting across the tests is supported by the source.
+- `Scoring_Engine.ts` now returns `tieLabel: "Тэнцсэн"` when two or more RIASEC types share the highest Test 3 count. Tied types at the third-place cutoff remain in `topThree`.
+- Local verification completed: strict TypeScript compilation passed; runtime checks confirmed 42 pair definitions, 42 total Test 3 selections, Test 1 six-item group aggregation, and rejection of invalid choice codes and wrong answer counts.
+- The current branch remains staging only. The tracked application is still a static `index.html`; participant UI, server-side persistence/autosave, admin approval, report generation, and email delivery are not integrated.
+- Do not merge this draft PR to `main` until the printed sample inconsistency is resolved with the source owner, Step 4 is professionally signed off, and application end-to-end tests pass.
