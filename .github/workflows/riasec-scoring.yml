@@ -1,4 +1,4 @@
-name: RIASEC scoring validation
+name: RIASEC scoring and browser validation
 
 on:
   pull_request:
@@ -22,3 +22,17 @@ jobs:
         run: |
           tsc --strict --target ES2020 --module commonjs --noEmit Scoring_Engine.ts
           tsc --strict --target ES2020 --module commonjs --noEmit src/lib/scoring/Step4Analyzer.ts
+
+  browser-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run real-browser questionnaire test
+        run: node tests/browser/riasec-e2e.cjs
