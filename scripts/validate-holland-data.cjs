@@ -22,8 +22,8 @@ const enginePairs = [...pairBlock[1].matchAll(/\["([RIASEC])","([RIASEC])"\]/g)]
 assert.equal(enginePairs.length, 42, "Scoring engine must contain 42 Test 3 pairs");
 const codeNumber = { R: 1, I: 2, A: 3, S: 4, E: 5, C: 6 };
 q.test3.forEach((pair, index) => {
-  assert.deepEqual([pair[2], pair[3]], enginePairs[index].map(code => codeNumber[code]),
-    `Test 3 pair ${index + 1} must match scoring engine mapping`);
+  assert.equal(pair[2], codeNumber[enginePairs[index][0]], `Test 3 pair ${index + 1} first code must match scoring engine mapping`);
+  assert.equal(pair[3], codeNumber[enginePairs[index][1]], `Test 3 pair ${index + 1} second code must match scoring engine mapping`);
 });
 const html = fs.readFileSync("holland-assessment.html", "utf8");
 const inlineScripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(m => m[1]).filter(s => s.trim());
