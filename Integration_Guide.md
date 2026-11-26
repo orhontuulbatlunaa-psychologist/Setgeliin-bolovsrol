@@ -15,8 +15,8 @@ This branch is a staging workspace. The scoring engine is compiled with strict T
 - Keep admin review and report approval separate from scoring. No report is sent before approval.
 - Keep raw answers immutable and version every recalculation.
 
-## Step 4 interpretation
-Compare the top three interest, ability, and occupational types on the same RIASEC order (R–I–A–S–E–C). The source describes three patterns: (1) all three sets overlap; (2) interest and ability overlap but occupation differs; (3) all three differ strongly. Do not invent a weighted combined score. Where the source does not define a unique dominant type (including ties or ambiguous overlap), present the candidate pattern for counselor confirmation.
+## Step 4 comparison (source-faithful)
+Use `Step4_Analyzer.ts`. Display three concentric hexagons in R–I–A–S–E–C order: interest on the inner ring, ability on the middle ring, occupation on the outer ring. Compare the top-three sets and identify the source's three cases: (1) overlap across all three tests; (2) interest and ability overlap but occupation differs; (3) all three differ strongly. In case 1, show common candidates and adjacent types. The source says the highest score among overlapping corners becomes dominant, but it does not define a cross-test common numeric scale or a tie-break for 18-point versus 42-count measures. Do not add or normalize raw scores; have the counselor confirm the dominant and two accompanying types. In case 2, advise expanding career knowledge and consulting parents, teachers, or a career counselor. In case 3, show the three reflection questions and recommend using ability as a reference if decision-making is difficult.
 
 ## Build
 `npx tsc --strict --target ES2020 --module commonjs --outDir dist Scoring_Engine.ts`
