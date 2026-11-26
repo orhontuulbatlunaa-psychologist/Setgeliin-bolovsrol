@@ -1,13 +1,13 @@
-/** Holland RIASEC scoring core. Source-based; no cross-test raw-score addition. */
+/** Holland RIASEC scoring engine — deterministic, source-ordered. */
 export type Code = "R"|"I"|"A"|"S"|"E"|"C";
 export type Scores = Record<Code,number>;
-export type Ranked = {code:Code; score:number; rank:number};
-export type TestScore = {scores:Scores; ranked:Ranked[]; topThree:Ranked[]; maxScore:number};
-export type ThreeTests = {interest:TestScore; ability:TestScore; occupation:TestScore};
-export const ORDER:Code[]=["R","I","A","S","E","C"];
-const GROUPS:Code[]=["R","I","A","S","E","C"];
-// Test 3: two occupation codes per pair, transcribed in source order.
-export const TEST3_PAIRS: readonly (readonly [Code,Code])[] = [
+export type Ranked = {code:Code;score:number;rank:number};
+export type TestScore = {scores:Scores;ranked:Ranked[];topThree:Ranked[];maxScore:number;tieLabel?:"Тэнцсэн"|"Тэнцээгүй"};
+export type ThreeTests = {interest:TestScore;ability:TestScore;occupation:TestScore};
+export const ORDER:readonly Code[]=["R","I","A","S","E","C"];
+const GROUPS:readonly Code[]=["R","I","A","S","E","C"];
+/** Pair order copied from the 42 two-occupation cells in the source questionnaire. */
+export const TEST3_PAIRS:readonly (readonly [Code,Code])[]=[
 ["R","I"],["I","C"],["R","S"],["I","E"],["R","C"],["I","A"],
 ["R","E"],["S","C"],["R","A"],["S","E"],["I","S"],["S","A"],
 ["I","C"],["C","E"],["I","E"],["C","A"],["I","A"],["E","A"],
@@ -16,51 +16,69 @@ export const TEST3_PAIRS: readonly (readonly [Code,Code])[] = [
 ["R","I"],["I","A"],["R","S"],["S","C"],["R","C"],["S","E"],
 ["R","A"],["C","E"],["I","S"],["A","S"],["E","A"],["R","E"]
 ];
-function assert(ok:unknown,msg:string):asserts ok { if(!ok) throw new Error(msg); }
-function rank(scores:Scores,maxScore:number):TestScore {
- const ranked=ORDER.map(code=>({code,score:scores[code],rank:0})).sort((a,b)=>b.score-a.score);
- let last:number|undefined, r=0;
- ranked.forEach((x,i)=>{if(last===undefined||x.score!==last)r=i+1;x.rank=r;last=x.score;});
- const cutoff=ranked[2].score;
- return {scores,ranked,topThree:ranked.filter(x=>x.score>=cutoff),maxScore};
+function assert(ok:unknown,message:string):asserts ok {if(!ok)throw new Error(message);}
+function emptyScores():Scores{return {R:0,I:0,A:0,S:0,E:0,C:0};}
+function rank(scores:Scores,maxScore:number):TestScore{
+ const sorted=ORDER.map(code=>({code,score:scores[code],rank:0})).sort((a,b)=>b.score-a.score||ORDER.indexOf(a.code)-ORDER.indexOf(b.code));
+ let last:number|undefined,rankNumber=0;
+ sorted.forEach((item,index)=>{if(last===undefined||item.score!==last)rankNumber=index+1;item.rank=rankNumber;last=item.score;});
+ const cutoff=sorted[2].score;
+ return {scores,ranked:sorted,topThree:sorted.filter(x=>x.score>=cutoff),maxScore};
 }
-function scoreLikert(answers:readonly number[],name:string):TestScore {
- assert(Array.isArray(answers)&&answers.length===36,name+": 36 хариулт шаардлагатай.");
- const scores:Scores={R:0,I:0,A:0,S:0,E:0,C:0};
- answers.forEach((v,i)=>{assert(Number.isInteger(v)&&v>=0&&v<=3,name+": "+(i+1)+"-р хариулт 0–3 байх ёстой.");scores[GROUPS[Math.floor(i/6)]]+=v;});
+function scoreLikert(answers:readonly number[],label:string):TestScore{
+ assert(Array.isArray(answers)&&answers.length===36,`${label}: 36 хариулт шаардлагатай.`);
+ const scores=emptyScores();
+ answers.forEach((value,index)=>{
+  assert(Number.isInteger(value)&&value>=0&&value<=3,`${label}: ${index+1}-р хариулт бүхэл 0–3 байх ёстой.`);
+  scores[GROUPS[Math.floor(index/6)]]+=value;
+ });
  return rank(scores,18);
 }
-export function scoreInterest(a:readonly number[]){return scoreLikert(a,"Тест 1");}
-export function scoreAbility(a:readonly number[]){return scoreLikert(a,"Тест 2");}
-export function scoreOccupation(selected:readonly Code[]):TestScore {
- const choices: unknown = selected;
- assert(Array.isArray(choices)&&choices.length===42,"Тест 3: 42 хос бүрээс нэг сонголт шаардлагатай.");
- const s:Scores={R:0,I:0,A:0,S:0,E:0,C:0};
- (choices as unknown[]).forEach((raw,i)=>{
-  assert(typeof raw==="string"&&(TEST3_PAIRS[i] as readonly string[]).includes(raw),"Тест 3: "+(i+1)+"-р хосын сонголт тухайн хоёр мэргэжлийн аль нэг байх ёстой.");
-  const v=raw as Code;
-  s[v]++;
+export function scoreInterest(answers:readonly number[]):TestScore{return scoreLikert(answers,"Тест 1");}
+export function scoreAbility(answers:readonly number[]):TestScore{return scoreLikert(answers,"Тест 2");}
+export function scoreOccupation(selected:readonly Code[]):TestScore{
+ const raw:unknown=selected;
+ assert(Array.isArray(raw)&&raw.length===42,"Тест 3: 42 хос бүрээс яг нэг сонголт шаардлагатай.");
+ const scores=emptyScores();
+ (raw as unknown[]).forEach((value,index)=>{
+  const pair=TEST3_PAIRS[index];
+  assert(typeof value==="string"&&pair.includes(value as Code),`Тест 3: ${index+1}-р хосын сонголт тухайн хосын аль нэг код байх ёстой.`);
+  scores[value as Code]+=1;
  });
- return rank(s,42);
+ const result=rank(scores,42);
+ const max=result.ranked[0].score;
+ const tied=result.ranked.filter(x=>x.score===max).length>1;
+ return {...result,tieLabel:tied?"Тэнцсэн":"Тэнцээгүй"};
 }
-export function scoreAll(a:{interest:readonly number[];ability:readonly number[];occupation:readonly Code[]}):ThreeTests {
- return {interest:scoreInterest(a.interest),ability:scoreAbility(a.ability),occupation:scoreOccupation(a.occupation)};
+export function scoreAll(input:{interest:readonly number[];ability:readonly number[];occupation:readonly Code[]}):ThreeTests{
+ return {interest:scoreInterest(input.interest),ability:scoreAbility(input.ability),occupation:scoreOccupation(input.occupation)};
 }
-export type Step4Case="all_overlap"|"interest_ability_overlap"|"all_diverge"|"needs_review";
-export type Step4Result={case:Step4Case;overlap:Code[];interestAbilityOverlap:Code[];dominant:Code|null;accompanying:Code[];counselorReview:boolean;message:string};
-const adjacent:Record<Code,Code[]>={R:["I","C"],I:["R","A"],A:["I","S"],S:["A","E"],E:["S","C"],C:["E","R"]};
-/** Step 4: compare top-three sets as three independent layers; never sum unlike scales. */
-export function analyzeStep4(t:ThreeTests):Step4Result {
- const i=t.interest.topThree.map(x=>x.code), a=t.ability.topThree.map(x=>x.code), o=t.occupation.topThree.map(x=>x.code);
- const overlap=i.filter(x=>a.includes(x)&&o.includes(x));
- const ia=i.filter(x=>a.includes(x));
- if(overlap.length){
-  const clear=overlap.length===1;
-  const lead=overlap[0];
-  const adjacentCandidates=ORDER.filter(x=>adjacent[lead].includes(x)&&i.includes(x)&&a.includes(x)&&o.includes(x));
-  const ready=clear&&adjacentCandidates.length>=1;
-  return {case:ready?"all_overlap":"needs_review",overlap,interestAbilityOverlap:ia,dominant:ready?lead:null,accompanying:ready?adjacentCandidates.slice(0,2):[],counselorReview:!ready,message:ready?"Гурван тестийн үр дүн нэг хэв шинж дээр давхцаж байна. Зэргэлдээ давхцсан хэв шинжүүдийг дагалдах чиглэлээр харуулав.":"Гурван тестийн давхцал олон утгатай эсвэл дагалдах хэв шинжийг эх материалын зарчмаар ялгах боломжгүй байна. Зөвлөхийн хяналт шаардлагатай."};
- }
- if(ia.length) return {case:"interest_ability_overlap",overlap,interestAbilityOverlap:ia,dominant:null,accompanying:[],counselorReview:true,message:"Сонирхол ба чадавх давхцаж байгаа боловч мэргэжлийн сонголт зөрж байна. Мэргэжлийн талаарх мэдлэгээ өргөжүүлж, эцэг эх, багш эсвэл мэргэжил сонголтын зөвлөхтэй ярилцахыг зөвлөе."};
- return {case:"all_diverge",overlap,interestAbilityOverlap:ia,dominant:null,accompanying:[],counselorReview:true,message:"Гурван үр дүн мэдэгдэхүйц зөрж байна. Өөрийн сонирхол, чадавх, амжилттай хийж чадах ажлын талаар эргэцүүлж, шаардлагатай бол чадавхын үр дүнг баримжаа болгон зөвлөгөө аваарай."};
+export type Step4Case="THREE_WAY_OVERLAP"|"INTEREST_ABILITY_OVERLAP"|"THREE_WAY_DIVERGENCE";
+export type Step4Result={
+ case:Step4Case;
+ interest:Code[];ability:Code[];occupation:Code[];
+ commonToAll:Code[];commonInterestAbility:Code[];
+ dominantCandidates:Code[];accompanyingCandidates:Code[];
+ counselorConfirmationRequired:true;interpretation:string;
+};
+export function analyzeStep4(t:ThreeTests):Step4Result{
+ const i=t.interest.topThree.map(x=>x.code),a=t.ability.topThree.map(x=>x.code),o=t.occupation.topThree.map(x=>x.code);
+ const commonToAll=ORDER.filter(x=>i.includes(x)&&a.includes(x)&&o.includes(x));
+ const commonIA=ORDER.filter(x=>i.includes(x)&&a.includes(x));
+ if(commonToAll.length)return {
+  case:"THREE_WAY_OVERLAP",interest:i,ability:a,occupation:o,commonToAll,commonInterestAbility:commonIA,
+  dominantCandidates:commonToAll,accompanyingCandidates:[],
+  counselorConfirmationRequired:true,
+  interpretation:"Гурван давхаргын давхцал байна. Эх материалын дагуу давхцсан хэв шинжүүдээс хамгийн өндөр оноотойг зонхилохоор сонгох ёстой. Онооны хэмжүүрүүд өөр тул автоматаар харьцуулж болохгүй; зөвлөх баталгаажуулна."
+ };
+ if(commonIA.length)return {
+  case:"INTEREST_ABILITY_OVERLAP",interest:i,ability:a,occupation:o,commonToAll,commonInterestAbility:commonIA,
+  dominantCandidates:[],accompanyingCandidates:[],counselorConfirmationRequired:true,
+  interpretation:"Сонирхол ба чадавх давхцаж, мэргэжлийн сонголт зөрж байна. Мэргэжлийн талаарх мэдлэгээ өргөжүүлж, эцэг эх, багш эсвэл мэргэжлийн зөвлөхтэй ярилцахыг зөвлө."
+ };
+ return {
+  case:"THREE_WAY_DIVERGENCE",interest:i,ability:a,occupation:o,commonToAll,commonInterestAbility:commonIA,
+  dominantCandidates:[],accompanyingCandidates:[],counselorConfirmationRequired:true,
+  interpretation:"Сонирхол, чадавх, мэргэжлийн хэв шинжүүд зөрж байна. Сонирхол, чадавх, амжилттай хийж чадах ажлын талаар эргэцүүлж, шаардлагатай бол зөвлөгөө ав."
+ };
 }
