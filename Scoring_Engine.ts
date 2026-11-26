@@ -6,15 +6,50 @@ export type TestScore = {scores:Scores;ranked:Ranked[];topThree:Ranked[];maxScor
 export type ThreeTests = {interest:TestScore;ability:TestScore;occupation:TestScore};
 export const ORDER:readonly Code[]=["R","I","A","S","E","C"];
 const GROUPS:readonly Code[]=["R","I","A","S","E","C"];
-/** Pair order copied from the 42 two-occupation cells in the source questionnaire. */
+/** Pair codes transcribed from the two numbered occupation choices in each of the 42 source questionnaire cells. */
 export const TEST3_PAIRS:readonly (readonly [Code,Code])[]=[
-["R","I"],["I","C"],["R","S"],["I","E"],["R","C"],["I","A"],
-["R","E"],["S","C"],["R","A"],["S","E"],["I","S"],["S","A"],
-["I","C"],["C","E"],["I","E"],["C","A"],["I","A"],["E","A"],
-["R","C"],["R","I"],["S","E"],["R","C"],["S","A"],["R","E"],
-["C","E"],["R","A"],["C","A"],["I","C"],["E","A"],["I","S"],
-["R","I"],["I","A"],["R","S"],["S","C"],["R","C"],["S","E"],
-["R","A"],["C","E"],["I","S"],["A","S"],["E","A"],["R","E"]
+["R","I"],
+["I","C"],
+["R","I"],
+["S","E"],
+["R","I"],
+["C","A"],
+["R","S"],
+["E","C"],
+["R","S"],
+["A","E"],
+["I","S"],
+["S","A"],
+["I","C"],
+["C","E"],
+["I","C"],
+["E","A"],
+["I","E"],
+["A","A"],
+["R","R"],
+["C","I"],
+["S","R"],
+["E","C"],
+["S","R"],
+["A","E"],
+["C","R"],
+["E","A"],
+["C","I"],
+["A","C"],
+["E","I"],
+["A","S"],
+["R","I"],
+["I","A"],
+["R","S"],
+["S","C"],
+["R","S"],
+["C","E"],
+["R","C"],
+["A","E"],
+["I","A"],
+["S","S"],
+["E","R"],
+["A","E"]
 ];
 function assert(ok:unknown,message:string):asserts ok {if(!ok)throw new Error(message);}
 function emptyScores():Scores{return {R:0,I:0,A:0,S:0,E:0,C:0};}
