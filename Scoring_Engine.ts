@@ -10,7 +10,7 @@ const GROUPS:Code[]=["R","I","A","S","E","C"];
 export const TEST3_PAIRS: readonly (readonly [Code,Code])[] = [
 ["R","I"],["I","C"],["R","S"],["I","E"],["R","C"],["I","A"],
 ["R","E"],["S","C"],["R","A"],["S","E"],["I","S"],["S","A"],
-["I","C"],["C","E"],["I","C"],["C","A"],["I","A"],["E","A"],
+["I","C"],["C","E"],["I","E"],["C","A"],["I","A"],["E","A"],
 ["R","C"],["R","I"],["S","E"],["R","C"],["S","A"],["R","E"],
 ["C","E"],["R","A"],["C","A"],["I","C"],["E","A"],["I","S"],
 ["R","I"],["I","A"],["R","S"],["S","C"],["R","C"],["S","E"],
@@ -50,11 +50,11 @@ export function analyzeStep4(t:ThreeTests):Step4Result {
  const overlap=i.filter(x=>a.includes(x)&&o.includes(x));
  const ia=i.filter(x=>a.includes(x));
  if(overlap.length){
-  const candidates=overlap.slice().sort((x,y)=>(t.interest.scores[y]+t.ability.scores[y]+t.occupation.scores[y])-(t.interest.scores[x]+t.ability.scores[x]+t.occupation.scores[x]));
-  const lead=candidates[0], adjacentCandidates=candidates.filter(x=>adjacent[lead].includes(x));
-  const unique=candidates.length===1|| (candidates[1] && candidates[0]!==candidates[1]);
-  const clear=unique && adjacentCandidates.length>=1;
-  return {case:clear?"all_overlap":"needs_review",overlap,interestAbilityOverlap:ia,dominant:clear?lead:null,accompanying:clear?adjacentCandidates.slice(0,2):[],counselorReview:!clear,message:clear?"Гурван тестийн үр дүн давхцаж байна. Давхцсан хэв шинжээс зонхилох болон зэргэлдээ дагалдах хэв шинжийг тодорхойлов.":"Гурван тест давхцаж байгаа боловч зонхилох/дагалдах хэв шинжийг нэг утгатай тогтоох боломжгүй. Зөвлөхийн хяналт шаардлагатай."};
+  const clear=overlap.length===1;
+  const lead=overlap[0];
+  const adjacentCandidates=ORDER.filter(x=>adjacent[lead].includes(x)&&i.includes(x)&&a.includes(x)&&o.includes(x));
+  const ready=clear&&adjacentCandidates.length>=1;
+  return {case:ready?"all_overlap":"needs_review",overlap,interestAbilityOverlap:ia,dominant:ready?lead:null,accompanying:ready?adjacentCandidates.slice(0,2):[],counselorReview:!ready,message:ready?"Гурван тестийн үр дүн нэг хэв шинж дээр давхцаж байна. Зэргэлдээ давхцсан хэв шинжүүдийг дагалдах чиглэлээр харуулав.":"Гурван тестийн давхцал олон утгатай эсвэл дагалдах хэв шинжийг эх материалын зарчмаар ялгах боломжгүй байна. Зөвлөхийн хяналт шаардлагатай."};
  }
  if(ia.length) return {case:"interest_ability_overlap",overlap,interestAbilityOverlap:ia,dominant:null,accompanying:[],counselorReview:true,message:"Сонирхол ба чадавх давхцаж байгаа боловч мэргэжлийн сонголт зөрж байна. Мэргэжлийн талаарх мэдлэгээ өргөжүүлж, эцэг эх, багш эсвэл мэргэжил сонголтын зөвлөхтэй ярилцахыг зөвлөе."};
  return {case:"all_diverge",overlap,interestAbilityOverlap:ia,dominant:null,accompanying:[],counselorReview:true,message:"Гурван үр дүн мэдэгдэхүйц зөрж байна. Өөрийн сонирхол, чадавх, амжилттай хийж чадах ажлын талаар эргэцүүлж, шаардлагатай бол чадавхын үр дүнг баримжаа болгон зөвлөгөө аваарай."};
