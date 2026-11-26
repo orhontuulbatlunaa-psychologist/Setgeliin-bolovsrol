@@ -16,6 +16,8 @@ jobs:
           node-version: 20
       - name: Install TypeScript compiler
         run: npm install --global typescript
+      - name: Validate Holland questionnaire data
+        run: node scripts/validate-holland-data.cjs
       - name: Strict type-check scoring modules
         run: |
           tsc --strict --target ES2020 --module commonjs --noEmit Scoring_Engine.ts
