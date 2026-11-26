@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Холландын тест бөглөх</title>
+<style>
+:root{--bg:#fbf7f0;--paper:#fffdf9;--ink:#28372f;--muted:#68766d;--sage:#526b5b;--line:#e8e2d8;--clay:#bd8066}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,sans-serif}.wrap{width:min(900px,92%);margin:auto}header,footer{padding:18px 0;border-bottom:1px solid var(--line)}footer{border:0;border-top:1px solid var(--line);color:var(--muted)}a{color:var(--sage)}main{padding:30px 0 70px}h1,h2{font-family:Georgia,serif;font-weight:500;line-height:1.2}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}.question{padding:15px 0;border-bottom:1px solid var(--line)}.question:last-child{border:0}.qtitle{font-weight:600}.choices{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.choices label{border:1px solid var(--line);border-radius:10px;padding:7px 12px;background:#fff;cursor:pointer}.choices input{accent-color:var(--sage)}button{border:0;border-radius:28px;background:var(--sage);color:#fff;padding:13px 20px;font:inherit;font-weight:650;cursor:pointer}.notice{background:#f7eee7;border-left:4px solid var(--clay);padding:12px 15px;border-radius:0 10px 10px 0}.muted,small{color:var(--muted)}.progress{font-weight:650;color:var(--sage)}#result{display:none}.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.score div{padding:12px;border:1px solid var(--line);border-radius:12px;background:white}@media(max-width:560px){.card{padding:16px}.score{grid-template-columns:repeat(2,1fr)}}
+</style></head><body><header><div class="wrap"><a href="holland-test.html">← Танилцуулга руу буцах</a></div></header>
+<main class="wrap"><h1>Холландын мэргэжил сонголтын тест</h1><p class="muted">Нийт 114 хариулт шаардлагатай. Хариултууд энэ хуудсыг нээлттэй байлгах хугацаанд зөвхөн таны браузер дотор байна.</p>
+<p class="notice"><b>Туршилтын горим:</b> Илгээхэд оноог зөвхөн энэ дэлгэцэд тооцно. Серверт хадгалах, PDF тайлан үүсгэх, админд илгээх боломж одоогоор холбогдоогүй.</p>
+<div id="app"></div><section id="result" class="card" aria-live="polite"></section></main><footer><div class="wrap">© Сэтгэлийн боловсрол</div></footer>
+<script src="holland-questions.js"></script><script>
+(function(){
+"use strict";
+const types=[
+["R","Бодит үйл ажиллагааг эрхэмлэгч"],
+["I","Судлаач, шинжээч"],["A","Уран сайхны"],
+["S","Нийгмийн"],["E","Ажил хэрэгч"],["C","Стандартыг баримтлагч"]
+];
+const data=window.HOLLAND_QUESTIONS;
+const app=document.getElementById("app");
+if(!data||data.test1.length!==36||data.test2.length!==36||data.test3.length!==42){app.textContent="Асуултын өгөгдөл бүрэн бус байна. Тестийг эхлүүлэх боломжгүй.";return;}
+const form=document.createElement("form");
+function section(title,description,items,key){
+ const card=document.createElement("section");card.className="card";
+ const h=document.createElement("h2");h.textContent=title;card.append(h);
+ const p=document.createElement("p");p.className="muted";p.textContent=description;card.append(p);
+ items.forEach((item,i)=>{
+  const q=document.createElement("div");q.className="question";
+  const t=document.createElement("div");t.className="qtitle";t.textContent=(i+1)+". "+item; q.append(t);
+  const choices=document.createElement("div");choices.className="choices";
+  for(let n=0;n<=3;n++){const label=document.createElement("label"),input=document.createElement("input");input.type="radio";input.name=key+"-"+i;input.value=String(n);input.required=true;label.append(input,document.createTextNode(" "+n));choices.append(label);}
+  q.append(choices);card.append(q);
+ });form.append(card);
+}
+section("Тест 1. Миний мэргэжилд чиглэсэн хүсэл сонирхол","Асуулт бүрт 0–3 онооны аль нэгийг сонгоно уу.",data.test1,"t1");
+section("Тест 2. Би юу чаддаг вэ?","Өөрийн чадавхийн талаарх үнэлгээгээр 0–3 оноо сонгоно уу.",data.test2,"t2");
+const card=document.createElement("section");card.className="card";const h=document.createElement("h2");h.textContent="Тест 3. Миний мэргэжлийн хэв шинж";card.append(h);
+const p=document.createElement("p");p.className="muted";p.textContent="Хос бүрээс арай дээр гэж үзсэн нэг мэргэжлийг заавал сонгоно уу.";card.append(p);
+data.test3.forEach((pair,i)=>{const q=document.createElement("div");q.className="question";const t=document.createElement("div");t.className="qtitle";t.textContent=(i+1)+". Сонголтоо хийнэ үү";q.append(t);const choices=document.createElement("div");choices.className="choices";
+[pair[0],pair[1]].forEach((name,j)=>{const label=document.createElement("label"),input=document.createElement("input");input.type="radio";input.name="t3-"+i;input.value=String(j);input.required=true;label.append(input,document.createTextNode(" "+name));choices.append(label);});q.append(choices);card.append(q);});
+form.append(card);
+const submit=document.createElement("button");submit.type="submit";submit.textContent="Хариултыг шалгаж, оноо бодох";form.append(submit);
+const progress=document.createElement("p");progress.className="progress";progress.textContent="Бүх асуултад хариулсны дараа оноо бодогдоно.";form.prepend(progress);
+form.addEventListener("change",()=>{const done=form.querySelectorAll('input:checked').length;progress.textContent="Хариулсан: "+done+" / 114";});
+form.addEventListener("submit",e=>{
+ e.preventDefault();if(!form.reportValidity())return;
+ const sums=[0,0,0,0,0,0],ability=[0,0,0,0,0,0],occupation=[0,0,0,0,0,0];
+ for(let i=0;i<36;i++){sums[Math.floor(i/6)]+=Number(form.elements["t1-"+i].value);ability[Math.floor(i/6)]+=Number(form.elements["t2-"+i].value);}
+ for(let i=0;i<42;i++){const selected=Number(form.elements["t3-"+i].value);occupation[data.test3[i][selected+2]-1]++;}
+ function rank(arr){const sorted=[...arr].sort((a,b)=>b-a);const cutoff=sorted[2];return types.filter((_,i)=>arr[i]>=cutoff).map((t)=>t[0]);}
+ const result=document.getElementById("result");result.style.display="block";result.replaceChildren();
+ const title=document.createElement("h2");title.textContent="Таны онооны хураангуй";result.append(title);
+ function renderScores(name,arr,max){const sub=document.createElement("h3");sub.textContent=name;result.append(sub);const grid=document.createElement("div");grid.className="score";arr.forEach((v,i)=>{const d=document.createElement("div");d.textContent=types[i][0]+" — "+types[i][1]+": "+v+" / "+max;grid.append(d);});result.append(grid);const top=document.createElement("p");top.innerHTML="<b>Гуравдугаар байрт багтсан бүх хэв шинж:</b> "+rank(arr).join(", ");result.append(top);}
+ renderScores("Тест 1 · Хүсэл сонирхол",sums,18);renderScores("Тест 2 · Чадавхийн өөрийн үнэлгээ",ability,18);renderScores("Тест 3 · Мэргэжлийн хэв шинж",occupation,42);
+ const note=document.createElement("p");note.className="notice";note.textContent="Эдгээр гурван онооны хэмжүүр өөр тул хооронд нь нэмж нэг нийлбэр оноо гаргаагүй. Гуравдугаар байрын тэнцээг бүгдийг харуулсан. Үр дүнг мэргэжлийн зөвлөхтэй хамт тайлбарлана уу. Энэ үр дүн зөвхөн энэ браузерийн одоогийн хуудсанд харагдана.";result.append(note);result.scrollIntoView({behavior:"smooth"});
+});
+app.append(form);
+})();
+</script></body></html>
