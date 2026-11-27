@@ -48,7 +48,8 @@ tops.forEach(t=>{draw("chart"+t.id,[{list:t.list,max:t.max}],t.max);document.get
 draw("combined",tops.map(t=>({list:t.list,max:t.max})),0,true);
 const freq=Array(6).fill(0);tops.forEach(t=>t.list.forEach(x=>freq[x.i]++));
 const order=freq.map((v,i)=>({v,i})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v||a.i-b.i);
-const rk=document.getElementById("riasecKey");T.forEach(x=>{const item=document.createElement("span");item.className="keyitem";item.innerHTML='<i class="dot" style="--c:'+x[2]+'"></i>'+x[0]+" · "+x[1];rk.append(item)});\nconst root=document.getElementById("frequency");order.forEach(x=>{const row=document.createElement("div");row.className="legendrow";row.innerHTML='<span class="dot" style="--c:'+T[x.i][2]+'"></span><span>'+T[x.i][0]+' · '+T[x.i][1]+'</span><b class="count">'+x.v+'/3</b>';root.append(row)});
+const rk=document.getElementById("riasecKey");T.forEach(x=>{const item=document.createElement("span");item.className="keyitem";item.innerHTML='<i class="dot" style="--c:'+x[2]+'"></i>'+x[0]+" · "+x[1];rk.append(item)});
+const root=document.getElementById("frequency");order.forEach(x=>{const row=document.createElement("div");row.className="legendrow";row.innerHTML='<span class="dot" style="--c:'+T[x.i][2]+'"></span><span>'+T[x.i][0]+' · '+T[x.i][1]+'</span><b class="count">'+x.v+'/3</b>';root.append(row)});
 function set(id,x){document.getElementById(id).textContent=x?T[x.i][0]+" · "+T[x.i][1]:"—"}
 const maxfreq=order[0]?.v||0,first=order.filter(x=>x.v===maxfreq),secondFreq=order.find(x=>x.v<maxfreq)?.v||0,second=order.filter(x=>x.v===secondFreq);
 set("dominant",first[0]);document.getElementById("dominantCount").textContent="Давтамж: "+maxfreq+"/3";
