@@ -87,7 +87,7 @@ form.addEventListener("submit",e=>{
  const maxScore=order[0].score;
  const leaders=order.filter(x=>x.score===maxScore);
  const leaderIndexes=leaders.map(x=>x.index);
- const supportIndexes=occupationTop.map(code=>types.findIndex(t=>t[0]===code)).filter(i=>i>=0&&!leaderIndexes.includes(i));
+ const supportIndexes=occupationTop.map(code=>types.findIndex(t=>t[0]===code)).filter(i=>i>=0&&!leaderIndexes.includes(i)).sort((a,b)=>occupation[b]-occupation[a]);
  const colors=["#bd8066","#7892a3","#a18aa8","#7c9b83","#c49a62","#87939a"];
  const fullNames=["Бодит үйл ажиллагааг эрхэмлэгч","Судлаач, шинжээч","Уран сайхны","Нийгмийн","Ажил хэрэгч","Стандартыг баримтлагч"];
  const report=document.createElement("section");report.className="t3-report";
