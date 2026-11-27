@@ -51,18 +51,58 @@ const server = http.createServer((req, res) => {
     await page.getByRole("button", { name: "Хариултыг шалгаж, оноо бодох" }).click();
     await page.locator("#result").waitFor({ state: "visible" });
 
-    const resultText = await page.locator("#result").innerText();
-    for (const code of ["R", "I", "A", "S", "E", "C"]) {
-      assert.ok(resultText.includes(`${code} —`), `Үр дүнд ${code} хэв шинж байх ёстой`);
-      assert.ok(resultText.includes(`: 18 / 18`) || resultText.includes(`: 12 / 18`),
-        "Test 1/2-ийн бүлгийн онооны хязгаар зөв байх ёстой");
+    const result = page.locator("#result");
+    const resultText = await result.innerText();
+
+    const reportHeadings = await result.locator(".t3-report h2").allTextContents();
+    assert.deepEqual(reportHeadings, [
+      "Таны мэргэжилд чиглэсэн хүсэл сонирхол",
+      "Таны өөрийн үнэлсэн чадавх",
+      "Таны мэргэжлийн хэв шинж"
+    ], "Үр дүнгийн тайлангууд батлагдсан дарааллаар харагдах ёстой");
+
+    const expectedTypes = [
+      "R · Бодит үйл ажиллагааг эрхэмлэгч",
+      "I · Судлаач, шинжээч",
+      "A · Уран сайхны",
+      "S · Нийгмийн",
+      "E · Ажил хэрэгч",
+      "C · Стандартыг баримтлагч"
+    ];
+    for (const label of expectedTypes) {
+      assert.ok(resultText.includes(label), `Үр дүнд ${label} нэршил байх ёстой`);
     }
-    assert.ok(resultText.includes("Тест 1 · Хүсэл сонирхол"));
-    assert.ok(resultText.includes("Тест 2 · Чадавхийн өөрийн үнэлгээ"));
-    assert.ok(resultText.includes("Тест 3 · Мэргэжлийн хэв шинж"));
+    assert.ok(resultText.includes("18 / 18"), "Test 1-ийн 18/18 оноо харагдах ёстой");
+    assert.ok(resultText.includes("12 / 18"), "Test 2-ийн 12/18 оноо харагдах ёстой");
+    assert.ok(resultText.includes("ур чадварын шалгалт, онош биш"),
+      "Test 2 өөрийн үнэлгээний хязгаарлалтыг тайлбарлах ёстой");
+    assert.ok(resultText.includes("ТЕСТ 1 · СОНИРХОЛ"));
+    assert.ok(resultText.includes("ТЕСТ 2 · ЧАДАВХ"));
+    assert.ok(resultText.includes("ТЕСТ 3 · МИНИЙ МЭРГЭЖЛИЙН ХЭВ ШИНЖ"));
     assert.ok(resultText.includes("Алхам 4. Мэргэжлийн зонхилох хэв шинжээ тодорхойлох"));
-    assert.ok(/Тэнцсэн|Тэнцээгүй/.test(resultText), "Test 3 тэнцлийн төлөв харагдах ёстой");
+    assert.ok(!resultText.includes("Таны сонгосон мэргэжлүүд"),
+      "Test 3-д сонгосон мэргэжлийн жагсаалт нэмэгдэх ёсгүй");
     assert.ok(!resultText.includes("NaN"), "Оноонд NaN гарах ёсгүй");
+
+    const interestRadii = await result.locator(".t3-report").nth(0)
+      .locator(".t3-chart circle").evaluateAll(nodes => nodes.map(node => Number(node.getAttribute("r"))));
+    const abilityRadii = await result.locator(".t3-report").nth(1)
+      .locator(".t3-chart circle").evaluateAll(nodes => nodes.map(node => Number(node.getAttribute("r"))));
+    assert.equal(interestRadii.length, 6, "Test 1 radar зургаан цэгтэй байх ёстой");
+    assert.equal(abilityRadii.length, 6, "Test 2 radar зургаан цэгтэй байх ёстой");
+    assert.ok(interestRadii.every(radius => radius === 13),
+      "Test 1-ийн ижил 18 оноонууд ижил, пропорциональ радиустай байх ёстой");
+    assert.ok(abilityRadii.every(radius => Math.abs(radius - (12 / 18 * 13)) < 0.001),
+      "Test 2-ийн ижил 12 оноонууд ижил, пропорциональ радиустай байх ёстой");
+
+    const interestBars = await result.locator(".t3-report").nth(0)
+      .locator(".t3-fill").evaluateAll(nodes => nodes.map(node => node.style.getPropertyValue("--w")));
+    const abilityBars = await result.locator(".t3-report").nth(1)
+      .locator(".t3-fill").evaluateAll(nodes => nodes.map(node => node.style.getPropertyValue("--w")));
+    assert.ok(interestBars.every(width => width === "100%"), "Test 1-ийн зургаан bar 18/18 байх ёстой");
+    assert.ok(abilityBars.every(width => Math.abs(parseFloat(width) - 66.6666666667) < 0.001),
+      "Test 2-ийн зургаан bar 12/18 байх ёстой");
+
     assert.deepEqual(errors, [], "Браузерийн JavaScript алдаагүй ажиллах ёстой");
 
     console.log("PASS: 114 асуулт, хоосон илгээлтийн хориг, явц, 3 тестийн оноо, Test 3 тэнцлийн төлөв, Алхам 4.");
