@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Холландын тест бөглөх</title>
+<style>
+:root{--bg:#fbf7f0;--paper:#fffdf9;--ink:#28372f;--muted:#68766d;--sage:#526b5b;--line:#e8e2d8;--clay:#bd8066}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,sans-serif}.wrap{width:min(900px,92%);margin:auto}header,footer{padding:18px 0;border-bottom:1px solid var(--line)}footer{border:0;border-top:1px solid var(--line);color:var(--muted)}a{color:var(--sage)}main{padding:30px 0 70px}h1,h2{font-family:Georgia,serif;font-weight:500;line-height:1.2}.card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px;margin:18px 0}.question{padding:15px 0;border-bottom:1px solid var(--line)}.question:last-child{border:0}.qtitle{font-weight:600}.choices{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.choices label{border:1px solid var(--line);border-radius:10px;padding:7px 12px;background:#fff;cursor:pointer}.choices input{accent-color:var(--sage)}button{border:0;border-radius:28px;background:var(--sage);color:#fff;padding:13px 20px;font:inherit;font-weight:650;cursor:pointer}.notice{background:#f7eee7;border-left:4px solid var(--clay);padding:12px 15px;border-radius:0 10px 10px 0}.muted,small{color:var(--muted)}.progress{font-weight:650;color:var(--sage)}#result{display:none}.score{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.score div{padding:12px;border:1px solid var(--line);border-radius:12px;background:white}@media(max-width:560px){.card{padding:16px}.score{grid-template-columns:repeat(2,1fr)}}
+
+/* Test 3 approved report layout */
+#result .t3-report{margin-top:28px;padding:clamp(20px,4vw,34px);background:#fffdf9;border:1px solid #e8e2d8;border-radius:22px}
+#result .t3-topline{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#68766d;font-size:12px;letter-spacing:.06em}
+#result .t3-eyebrow{margin:24px 0 5px;color:#bd8066;font-size:12px;font-weight:800;letter-spacing:.12em}
+#result .t3-report h2,#result .t3-report h3{font-family:Georgia,serif;font-weight:500;line-height:1.2}
+#result .t3-report h2{font-size:clamp(28px,4vw,38px);margin:6px 0 8px}
+#result .t3-report .t3-muted{color:#68766d}
+#result .t3-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:22px 0}
+#result .t3-summary-card{padding:17px;border:1px solid #e8e2d8;border-radius:16px;background:#fff}
+#result .t3-summary-card span{display:block;color:#68766d;font-size:13px}
+#result .t3-summary-card strong{display:block;font-size:19px;line-height:1.35;margin-top:5px}
+#result .t3-summary-card small{color:#68766d}
+#result .t3-section{border-top:1px solid #e8e2d8;margin-top:25px;padding-top:22px}
+#result .t3-chart-wrap{display:grid;grid-template-columns:minmax(230px,1fr) minmax(230px,.95fr);gap:20px;align-items:center}
+#result .t3-chart{width:100%;max-width:370px;margin:auto;display:block}
+#result .t3-legend{display:grid;gap:10px}
+#result .t3-legend-row{display:grid;grid-template-columns:13px 1fr auto;gap:9px;align-items:center;font-size:13px}
+#result .t3-swatch{width:11px;height:11px;border-radius:50%;background:var(--c)}
+#result .t3-track{height:8px;background:#eeeae3;border-radius:20px;overflow:hidden;margin-top:5px}
+#result .t3-fill{height:100%;width:var(--w);background:var(--c);border-radius:20px}
+#result .t3-value{font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+#result .t3-callout{margin-top:22px;background:#f3f0e8;border-left:4px solid #526b5b;padding:16px 18px;border-radius:0 13px 13px 0}
+#result .t3-callout p{margin:6px 0 0;color:#59675e}
+#result .t3-profile-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+#result .t3-profile{border:1px solid #e8e2d8;border-radius:13px;padding:13px;background:#fff}
+#result .t3-profile b{color:var(--c)}
+#result .t3-foot{font-size:12px;color:#68766d;margin-top:20px}
+@media(max-width:650px){#result .t3-summary,#result .t3-profile-list{grid-template-columns:1fr}#result .t3-chart-wrap{grid-template-columns:1fr}}
+
+</style></head><body><header><div class="wrap"><a href="holland-test.html">← Танилцуулга руу буцах</a></div></header>
+<main class="wrap"><h1>Холландын мэргэжил сонголтын тест</h1><p class="muted">Нийт 114 хариулт шаардлагатай. Хариултууд энэ хуудсыг нээлттэй байлгах хугацаанд зөвхөн таны браузер дотор байна.</p>
+<p class="notice"><b>Туршилтын горим:</b> Илгээхэд оноог зөвхөн энэ дэлгэцэд тооцно. Серверт хадгалах, PDF тайлан үүсгэх, админд илгээх боломж одоогоор холбогдоогүй.</p>
+<div id="app"></div><section id="result" class="card" aria-live="polite"></section></main><footer><div class="wrap">© Сэтгэлийн боловсрол</div></footer>
+<script src="holland-questions.js"></script><script>
+(function(){
+"use strict";
+const types=[
+["R","Бодит үйл ажиллагааг эрхэмлэгч"],
+["I","Судлаач, шинжээч"],["A","Уран сайхны"],
+["S","Нийгмийн"],["E","Ажил хэрэгч"],["C","Стандартыг баримтлагч"]
+];
+const data=window.HOLLAND_QUESTIONS;
+const app=document.getElementById("app");
+if(!data||data.test1.length!==36||data.test2.length!==36||data.test3.length!==42){app.textContent="Асуултын өгөгдөл бүрэн бус байна. Тестийг эхлүүлэх боломжгүй.";return;}
+const form=document.createElement("form");
+function section(title,description,items,key){
+ const card=document.createElement("section");card.className="card";
+ const h=document.createElement("h2");h.textContent=title;card.append(h);
+ const p=document.createElement("p");p.className="muted";p.textContent=description;card.append(p);
+ items.forEach((item,i)=>{
+  const q=document.createElement("div");q.className="question";
+  const t=document.createElement("div");t.className="qtitle";t.textContent=(i+1)+". "+item; q.append(t);
+  const choices=document.createElement("div");choices.className="choices";
+  for(let n=0;n<=3;n++){const label=document.createElement("label"),input=document.createElement("input");input.type="radio";input.name=key+"-"+i;input.value=String(n);input.required=true;label.append(input,document.createTextNode(" "+n));choices.append(label);}
+  q.append(choices);card.append(q);
+ });form.append(card);
+}
+section("Тест 1. Миний мэргэжилд чиглэсэн хүсэл сонирхол","Асуулт бүрт 0–3 онооны аль нэгийг сонгоно уу.",data.test1,"t1");
+section("Тест 2. Би юу чаддаг вэ?","Өөрийн чадавхийн талаарх үнэлгээгээр 0–3 оноо сонгоно уу.",data.test2,"t2");
+const card=document.createElement("section");card.className="card";const h=document.createElement("h2");h.textContent="Тест 3. Миний мэргэжлийн хэв шинж";card.append(h);
+const p=document.createElement("p");p.className="muted";p.textContent="Хос бүрээс арай дээр гэж үзсэн нэг мэргэжлийг заавал сонгоно уу.";card.append(p);
+data.test3.forEach((pair,i)=>{const q=document.createElement("div");q.className="question";const t=document.createElement("div");t.className="qtitle";t.textContent=(i+1)+". Сонголтоо хийнэ үү";q.append(t);const choices=document.createElement("div");choices.className="choices";
+[pair[0],pair[1]].forEach((name,j)=>{const label=document.createElement("label"),input=document.createElement("input");input.type="radio";input.name="t3-"+i;input.value=String(j);input.required=true;label.append(input,document.createTextNode(" "+name));choices.append(label);});q.append(choices);card.append(q);});
+form.append(card);
+const submit=document.createElement("button");submit.type="submit";submit.textContent="Хариултыг шалгаж, оноо бодох";form.append(submit);
+const progress=document.createElement("p");progress.className="progress";progress.textContent="Бүх асуултад хариулсны дараа оноо бодогдоно.";form.prepend(progress);
+form.addEventListener("change",()=>{const done=form.querySelectorAll('input:checked').length;progress.textContent="Хариулсан: "+done+" / 114";});
+form.addEventListener("submit",e=>{
+ e.preventDefault();if(!form.reportValidity())return;
+ const sums=[0,0,0,0,0,0],ability=[0,0,0,0,0,0],occupation=[0,0,0,0,0,0];
+ for(let i=0;i<36;i++){sums[Math.floor(i/6)]+=Number(form.elements["t1-"+i].value);ability[Math.floor(i/6)]+=Number(form.elements["t2-"+i].value);}
+ for(let i=0;i<42;i++){const selected=Number(form.elements["t3-"+i].value);occupation[data.test3[i][selected+2]-1]++;}
+ function rank(arr){const sorted=[...arr].sort((a,b)=>b-a);const cutoff=sorted[2];return types.filter((_,i)=>arr[i]>=cutoff).map((t)=>t[0]);}
+
+ const result=document.getElementById("result");result.style.display="block";result.replaceChildren();
+ const title=document.createElement("h2");title.textContent="Таны онооны хураангуй";result.append(title);
+
+ function renderAssessmentReport(testNumber,headingText,introText,arr,calloutText,footText){
+  const sorted=[...arr].sort((a,b)=>b-a),cutoff=sorted[2],highest=sorted[0];
+  const general=arr.map((score,index)=>({score,index})).filter(x=>x.score===highest);
+  const accompanying=arr.map((score,index)=>({score,index})).filter(x=>x.score<highest&&x.score>=cutoff).sort((a,b)=>b.score-a.score||a.index-b.index);
+  const colors=["#bd8066","#7892a3","#a18aa8","#7c9b83","#c49a62","#87939a"];
+  const report=document.createElement("article");report.className="t3-report";
+  const topLine=document.createElement("div");topLine.className="t3-topline";const brand=document.createElement("b");brand.textContent="♡ Сэтгэлийн боловсрол";const meta=document.createElement("span");meta.textContent="Мэргэжил сонголт · RIASEC";topLine.append(brand,meta);report.append(topLine);
+  const eyebrow=document.createElement("div");eyebrow.className="t3-eyebrow";eyebrow.textContent="ТЕСТ "+testNumber+" · "+(testNumber===1?"СОНИРХОЛ":"ЧАДАВХ");report.append(eyebrow);
+  const heading=document.createElement("h2");heading.textContent=headingText;report.append(heading);
+  const intro=document.createElement("p");intro.className="t3-muted";intro.textContent=introText;report.append(intro);
+  const summary=document.createElement("div");summary.className="t3-summary";
+  const generalCard=document.createElement("div");generalCard.className="t3-summary-card";const generalLabel=document.createElement("span");generalLabel.textContent="Ерөнхий хэв шинж";generalCard.append(generalLabel);
+  general.forEach(x=>{const n=document.createElement("strong");n.textContent=types[x.index][0]+" · "+types[x.index][1];generalCard.append(n);const s=document.createElement("small");s.textContent=x.score+" / 18 оноо";generalCard.append(s);});
+  const supportCard=document.createElement("div");supportCard.className="t3-summary-card";const supportLabel=document.createElement("span");supportLabel.textContent="Дагалдах хэв шинж";supportCard.append(supportLabel);
+  if(accompanying.length){accompanying.forEach(x=>{const n=document.createElement("strong");n.style.fontSize="17px";n.textContent=types[x.index][0]+" · "+types[x.index][1];supportCard.append(n);const s=document.createElement("small");s.textContent=x.score+" / 18 оноо";supportCard.append(s);});}else{const none=document.createElement("small");none.textContent="Гуравдугаар байрын онооны босгоор дагалдах хэв шинж тодроогүй.";supportCard.append(none);}
+  summary.append(generalCard,supportCard);report.append(summary);
+  const section=document.createElement("section");section.className="t3-section";const chartTitle=document.createElement("h3");chartTitle.textContent="Таны RIASEC зураглал";section.append(chartTitle);
+  const chartIntro=document.createElement("p");chartIntro.className="t3-muted";chartIntro.textContent="Цэгийн байрлал болон хэмжээ нь тухайн хэв шинжийн бодит оноогоор өөрчлөгдөнө.";section.append(chartIntro);
+  const chartWrap=document.createElement("div");chartWrap.className="t3-chart-wrap";const ns="http://www.w3.org/2000/svg",svg=document.createElementNS(ns,"svg");svg.setAttribute("viewBox","0 0 420 370");svg.setAttribute("class","t3-chart");svg.setAttribute("role","img");svg.setAttribute("aria-label","RIASEC зургаан өнцөгт зураглал");
+  const cx=210,cy=185,outer=155,angles=[-90,-30,30,90,150,210],point=(r,a)=>{const q=a*Math.PI/180;return[cx+r*Math.cos(q),cy+r*Math.sin(q)];};
+  [1,.75,.5,.25].forEach(scale=>{const p=document.createElementNS(ns,"polygon");p.setAttribute("points",angles.map(a=>point(outer*scale,a).join(",")).join(" "));p.setAttribute("fill","none");p.setAttribute("stroke","#e7e2d9");svg.append(p);});
+  angles.forEach(a=>{const p=point(outer,a),l=document.createElementNS(ns,"line");l.setAttribute("x1",cx);l.setAttribute("y1",cy);l.setAttribute("x2",p[0]);l.setAttribute("y2",p[1]);l.setAttribute("stroke","#e7e2d9");svg.append(l);});
+  const shape=document.createElementNS(ns,"polygon");shape.setAttribute("points",angles.map((a,i)=>point(outer*(arr[i]/18),a).join(",")).join(" "));shape.setAttribute("fill","#829b86");shape.setAttribute("fill-opacity",".18");shape.setAttribute("stroke","#526b5b");shape.setAttribute("stroke-width","2.5");svg.append(shape);
+  arr.forEach((score,i)=>{const p=point(outer*(score/18),angles[i]),d=document.createElementNS(ns,"circle");d.setAttribute("cx",p[0]);d.setAttribute("cy",p[1]);d.setAttribute("r",String(Math.max(3,score/18*13)));d.setAttribute("fill",colors[i]);d.setAttribute("stroke","#fff");d.setAttribute("stroke-width","2");svg.append(d);const q=point(outer+18,angles[i]),t=document.createElementNS(ns,"text");t.setAttribute("x",q[0]);t.setAttribute("y",q[1]+4);t.setAttribute("text-anchor","middle");t.setAttribute("fill","#526057");t.setAttribute("font-size","13");t.setAttribute("font-weight","700");t.textContent=types[i][0];svg.append(t);});
+  chartWrap.append(svg);const legend=document.createElement("div");legend.className="t3-legend";
+  arr.forEach((score,i)=>{const row=document.createElement("div");row.className="t3-legend-row";row.style.setProperty("--c",colors[i]);const sw=document.createElement("span");sw.className="t3-swatch";row.append(sw);const label=document.createElement("div"),name=document.createElement("b");name.textContent=types[i][0]+" · "+types[i][1];label.append(name);const track=document.createElement("div");track.className="t3-track";const fill=document.createElement("div");fill.className="t3-fill";fill.style.setProperty("--w",(score/18*100)+"%");track.append(fill);label.append(track);row.append(label);const value=document.createElement("span");value.className="t3-value";value.textContent=score+" / 18";row.append(value);legend.append(row);});
+  chartWrap.append(legend);section.append(chartWrap);const callout=document.createElement("div");callout.className="t3-callout";const cb=document.createElement("b");cb.textContent="Тайлбар";callout.append(cb);const cp=document.createElement("p");cp.textContent=calloutText;callout.append(cp);section.append(callout);report.append(section);
+  const foot=document.createElement("p");foot.className="t3-foot";foot.textContent=footText;report.append(foot);
+  const footer=document.createElement("div");footer.className="t3-topline";footer.style.borderTop="1px solid #e8e2d8";footer.style.marginTop="22px";footer.style.paddingTop="14px";const fl=document.createElement("span");fl.textContent="Сэтгэлийн боловсрол · Холландын мэргэжил сонголтын тест";const fr=document.createElement("span");fr.textContent="Үр дүнгийн тайлан · "+testNumber;footer.append(fl,fr);report.append(footer);result.append(report);
+ }
+ function renderScores(name,arr,max){const sub=document.createElement("h3");sub.textContent=name;result.append(sub);const grid=document.createElement("div");grid.className="score";arr.forEach((v,i)=>{const d=document.createElement("div");d.textContent=types[i][0]+" — "+types[i][1]+": "+v+" / "+max;grid.append(d);});result.append(grid);const top=document.createElement("p");top.innerHTML="<b>Гуравдугаар байрт багтсан бүх хэв шинж:</b> "+rank(arr).join(", ");result.append(top);}
+ renderAssessmentReport(1,"Таны мэргэжилд чиглэсэн хүсэл сонирхол","36 асуултын хариултыг RIASEC-ийн зургаан бүлгээр нэгтгэн харууллаа. Бүлэг бүрийн боломжит дээд оноо: 18.",sums,"Өндөр оноотой бүлгүүд нь одоогоор ямар төрлийн үйл ажиллагаа танд илүү сонирхол татаж байгааг илтгэнэ. Дагалдах хэв шинжүүдийг хамтад нь авч үзэж, өөрт тохирох мэргэжлийн чиглэлийг судлаарай.","Энэ тайлан нь таны өгсөн хариултад үндэслэсэн сонирхлын зураглал юм. Мэргэжлийн эцсийн шийдвэр биш.");
+ renderAssessmentReport(2,"Таны өөрийн үнэлсэн чадавх","36 асуултын өөрийн үнэлгээг RIASEC-ийн зургаан бүлгээр нэгтгэн харууллаа. Бүлэг бүрийн боломжит дээд оноо: 18. Энэ нь ур чадварын шалгалт, онош биш.",ability,"Өөрийн үнэлгээг хичээлийн амжилт, хийж үзсэн ажил, дадлага, багш болон ойр хүмүүсийн ажиглалттай харьцуулан эргэцүүлээрэй. Дагалдах хэв шинжүүдийг ерөнхий хэв шинжтэй хамт авч үзнэ үү.","Энэ тайлан нь өөрийн үнэлгээний үр дүн бөгөөд бодит чадварыг дангаар нь тогтоохгүй.");
+ const occupationTop=rank(occupation);
+ const order=occupation.map((score,index)=>({score,index})).sort((a,b)=>b.score-a.score);
+ const maxScore=order[0].score;
+ const leaders=order.filter(x=>x.score===maxScore);
+ const leaderIndexes=leaders.map(x=>x.index);
+ const supportIndexes=occupationTop.map(code=>types.findIndex(t=>t[0]===code)).filter(i=>i>=0&&!leaderIndexes.includes(i)).sort((a,b)=>occupation[b]-occupation[a]);
+ const colors=["#bd8066","#7892a3","#a18aa8","#7c9b83","#c49a62","#87939a"];
+ const fullNames=["Бодит үйл ажиллагааг эрхэмлэгч","Судлаач, шинжээч","Уран сайхны","Нийгмийн","Ажил хэрэгч","Стандартыг баримтлагч"];
+ const report=document.createElement("section");report.className="t3-report";
+ const topLine=document.createElement("div");topLine.className="t3-topline";topLine.innerHTML="<b>♡ Сэтгэлийн боловсрол</b><span>Мэргэжил сонголт · RIASEC</span>";report.append(topLine);
+ const eyebrow=document.createElement("div");eyebrow.className="t3-eyebrow";eyebrow.textContent="ТЕСТ 3 · МИНИЙ МЭРГЭЖЛИЙН ХЭВ ШИНЖ";report.append(eyebrow);
+ const heading=document.createElement("h2");heading.textContent="Таны мэргэжлийн хэв шинж";report.append(heading);
+ const intro=document.createElement("p");intro.className="t3-muted";intro.textContent="42 хос мэргэжлээс хийсэн сонголтын тань үр дүн. Аль төрлийн мэргэжлийг илүү олон удаа сонгосныг зургаан хэв шинжээр харууллаа.";report.append(intro);
+ const summary=document.createElement("div");summary.className="t3-summary";
+ const general=document.createElement("div");general.className="t3-summary-card";
+ const generalLabel=document.createElement("span");generalLabel.textContent="Ерөнхий мэргэжлийн хэв шинж";general.append(generalLabel);
+ const generalName=document.createElement("strong");generalName.textContent=leaders.map(x=>types[x.index][0]+" · "+fullNames[x.index]).join(" / ");general.append(generalName);
+ const generalScore=document.createElement("small");generalScore.textContent=leaders.map(x=>x.score+" / 42 оноо").join(" · ");general.append(generalScore);summary.append(general);
+ const supporting=document.createElement("div");supporting.className="t3-summary-card";
+ const supportLabel=document.createElement("span");supportLabel.textContent="Дагалдах хэв шинж";supporting.append(supportLabel);
+ supportIndexes.forEach(i=>{const name=document.createElement("strong");name.style.fontSize="17px";name.textContent=types[i][0]+" · "+fullNames[i];supporting.append(name);const score=document.createElement("small");score.textContent=occupation[i]+" / 42 оноо";supporting.append(score);});summary.append(supporting);report.append(summary);
+ const chartSection=document.createElement("section");chartSection.className="t3-section";
+ const chartTitle=document.createElement("h3");chartTitle.textContent="Таны RIASEC зураглал";chartSection.append(chartTitle);
+ const chartIntro=document.createElement("p");chartIntro.className="t3-muted";chartIntro.textContent="Цэгийн байрлал болон хэмжээ нь тухайн хэв шинжийн сонголтын тоогоор өөрчлөгдөнө.";chartSection.append(chartIntro);
+ const chartWrap=document.createElement("div");chartWrap.className="t3-chart-wrap";
+ const svgNS="http://www.w3.org/2000/svg";const svg=document.createElementNS(svgNS,"svg");svg.setAttribute("viewBox","0 0 420 370");svg.setAttribute("class","t3-chart");svg.setAttribute("role","img");svg.setAttribute("aria-label","Таны RIASEC зургаан өнцөгт зураглал");
+ const cx=210,cy=185,outer=155;const angles=[-90,-30,30,90,150,210];
+ function point(r,angle){const rad=angle*Math.PI/180;return [cx+r*Math.cos(rad),cy+r*Math.sin(rad)];}
+ [1,.75,.5,.25].forEach(scale=>{const poly=document.createElementNS(svgNS,"polygon");poly.setAttribute("points",angles.map(a=>point(outer*scale,a).join(",")).join(" "));poly.setAttribute("fill","none");poly.setAttribute("stroke","#e7e2d9");svg.append(poly);});
+ angles.forEach((angle,i)=>{const p=point(outer,angle);const line=document.createElementNS(svgNS,"line");line.setAttribute("x1",cx);line.setAttribute("y1",cy);line.setAttribute("x2",p[0]);line.setAttribute("y2",p[1]);line.setAttribute("stroke","#e7e2d9");svg.append(line);});
+ const profile=document.createElementNS(svgNS,"polygon");profile.setAttribute("points",angles.map((a,i)=>point(outer*(occupation[i]/42),a).join(",")).join(" "));profile.setAttribute("fill","#829b86");profile.setAttribute("fill-opacity",".18");profile.setAttribute("stroke","#526b5b");profile.setAttribute("stroke-width","2.5");svg.append(profile);
+ occupation.forEach((score,i)=>{const p=point(outer*(score/42),angles[i]);const dot=document.createElementNS(svgNS,"circle");dot.setAttribute("cx",p[0]);dot.setAttribute("cy",p[1]);dot.setAttribute("r",String(Math.max(3,score/42*13)));dot.setAttribute("fill",colors[i]);dot.setAttribute("stroke","#fff");dot.setAttribute("stroke-width","2");svg.append(dot);const label=point(outer+18,angles[i]);const textNode=document.createElementNS(svgNS,"text");textNode.setAttribute("x",label[0]);textNode.setAttribute("y",label[1]+4);textNode.setAttribute("text-anchor","middle");textNode.setAttribute("fill","#526057");textNode.setAttribute("font-size","13");textNode.setAttribute("font-weight","700");textNode.textContent=types[i][0];svg.append(textNode);});
+ chartWrap.append(svg);
+ const legend=document.createElement("div");legend.className="t3-legend";
+ occupation.forEach((score,i)=>{const row=document.createElement("div");row.className="t3-legend-row";row.style.setProperty("--c",colors[i]);const swatch=document.createElement("span");swatch.className="t3-swatch";row.append(swatch);const label=document.createElement("div");const name=document.createElement("b");name.textContent=types[i][0]+" · "+fullNames[i];label.append(name);const track=document.createElement("div");track.className="t3-track";const fill=document.createElement("div");fill.className="t3-fill";fill.style.setProperty("--w",(score/42*100)+"%");track.append(fill);label.append(track);row.append(label);const value=document.createElement("span");value.className="t3-value";value.textContent=score+" / 42";row.append(value);legend.append(row);});
+ chartWrap.append(legend);chartSection.append(chartWrap);
+ const callout=document.createElement("div");callout.className="t3-callout";const calloutTitle=document.createElement("b");calloutTitle.textContent="Тайлбар";callout.append(calloutTitle);
+ const calloutText=document.createElement("p");calloutText.textContent="Таны сонголтын хамгийн өндөр давтамжтай хэв шинж нь "+leaders.map(x=>types[x.index][1].toLowerCase()).join(", ")+" байна. Дараагийн оноогоор эрэмбэлэгдсэн дагалдах хэв шинжүүдийг хамтад нь авч үзэж, өөрийн сонирхол, туршлага, боломжтой холбон мэргэжлийн чиглэлээ эргэцүүлээрэй.";callout.append(calloutText);chartSection.append(callout);report.append(chartSection);
+ const foot=document.createElement("p");foot.className="t3-foot";foot.textContent="Тайлбар: Тест 3 нь 42 хосоос хийсэн сонголтын давтамжийг харуулна. Энэ нь чадварын шалгалт, сэтгэл зүйн онош, эсвэл мэргэжлийг эцэслэн тогтоох шийдвэр биш. Тест 1 болон Тест 2-ын оноотой шууд нийлүүлээгүй.";report.append(foot);
+ const footer=document.createElement("div");footer.className="t3-topline";footer.style.borderTop="1px solid #e8e2d8";footer.style.marginTop="22px";footer.style.paddingTop="14px";footer.innerHTML="<span>Сэтгэлийн боловсрол · Холландын мэргэжил сонголтын тест</span><span>Үр дүнгийн тайлан · 1</span>";report.append(footer);
+ result.append(report);
+ const step=document.createElement("section");step.className="card";
+ const stepTitle=document.createElement("h2");stepTitle.textContent="Алхам 4. Мэргэжлийн зонхилох хэв шинжээ тодорхойлох";step.append(stepTitle);
+ const introStep=document.createElement("p");introStep.textContent="Эх баримтын дагуу сонирхлын 3 хэв шинжийг дотор, чадавхийн 3 хэв шинжийг дунд, мэргэжлийн 3 хэв шинжийг гадна зургаан өнцөгтөд тус тус тэмдэглэн харьцуулна.";step.append(introStep);
+ function ring(label,codes){const p=document.createElement("p");const b=document.createElement("b");b.textContent=label+": ";p.append(b,document.createTextNode(codes.join(", ")));step.append(p);}
+ const interestTop=rank(sums),abilityTop=rank(ability);
+ ring("Дотор · Хүсэл сонирхол",interestTop);ring("Дунд · Чадавхи",abilityTop);ring("Гадна · Мэргэжил",occupationTop);
+ const sharedIA=interestTop.filter(code=>abilityTop.includes(code));const sharedAll=sharedIA.filter(code=>occupationTop.includes(code));
+ const outcome=document.createElement("p");outcome.className="notice";
+ if(sharedAll.length)outcome.textContent="1-р тохиолдол — Гурван хүрээнд давхцсан хэв шинж: "+sharedAll.join(", ")+". Эх баримтын зөвлөмжийн дагуу эдгээр хэв шинжид тохирох мэргэжлүүдийг судална.";
+ else if(sharedIA.length)outcome.textContent="2-р тохиолдол — Хүсэл сонирхол ба чадавхийн хүрээнд давхцаж буй хэв шинж: "+sharedIA.join(", ")+", харин мэргэжлийн хүрээ зөрүүтэй байна. Мэргэжлийн мэдлэгээ өргөжүүлж, багш эсвэл мэргэжлийн зөвлөхтэй ярилцаарай.";
+ else outcome.textContent="3-р тохиолдол — Хүсэл сонирхол, чадавхи, мэргэжлийн хэв шинжүүдийн хооронд зөрүү ажиглагдаж байна. Өөрийн сонирхол, чадавхийн талаар эргэцүүлэн бодож, багш болон мэргэжлийн зөвлөхтэй зөвлөлдөөрэй.";
+ step.append(outcome);const caveat=document.createElement("p");caveat.className="muted";caveat.textContent="Энэ нь эх баримтын тайлбарын автомат урьдчилсан чиглүүлэлт юм. Өөр өөр хэмжүүрийн түүхий оноог хооронд нь харьцуулж нэгтгээгүй.";step.append(caveat);result.append(step);
+ const note=document.createElement("p");note.className="notice";note.textContent="Эдгээр гурван онооны хэмжүүр өөр тул хооронд нь нэмж нэг нийлбэр оноо гаргаагүй. Үр дүнг мэргэжлийн зөвлөхтэй хамт тайлбарлана уу. Энэ үр дүн зөвхөн энэ браузерийн одоогийн хуудсанд харагдана.";result.append(note);
+ result.scrollIntoView({behavior:"smooth"});
+
+});
+app.append(form);
+})();
+</script></body></html>
